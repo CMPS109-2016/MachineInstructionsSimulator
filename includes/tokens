@@ -1,0 +1,14 @@
+//
+// Created by CIJhn on 10/24/2016.
+//
+
+#ifndef MACHINEINSTRUCTIONSSIMULATOR_TOKENS_H
+#define MACHINEINSTRUCTIONSSIMULATOR_TOKENS_H
+
+#include "TokenInst.h"
+#include "TokenLabel.h"
+#include "TokenVarTypeDecl.h"
+#include "TokenVariable.h"
+#include "TokenVarDecl.h"
+
+#endif //MACHINEINSTRUCTIONSSIMULATOR_TOKENS_H
