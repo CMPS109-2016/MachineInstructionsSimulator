@@ -1,5 +1,14 @@
 #The Machine Instructions Simulator (MIS) project
 
+##Status
+
+This project currently is in early design process. The header files and APIs are really unstable. 
+Including the project's structure, the locations of these files may change anytime.
+
+##Build
+
+This project uses cmake to build, based on c++14. Currently, major development is under Clion.
+
 ###Goals
 
 This is a programming project that is designed to let you utilize all the concepts
