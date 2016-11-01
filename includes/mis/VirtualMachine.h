@@ -10,9 +10,10 @@
 #include <thread>
 #include <mutex>
 #include "lang.h"
-#include "Parser.h"
 
 namespace mis {
+    class Parser;
+
     class VirtualMachine {
     public:
         template<typename T>
@@ -20,21 +21,22 @@ namespace mis {
             virtual void call(T &v)=0;
         };
 
-        VirtualMachine &operator()(std::ostream& ostream);
+        VirtualMachine &operator()(std::ostream &ostream);
 
         VirtualMachine &operator<<(const std::string &code);
 
         VirtualMachine &operator<<(VirtualMachine &(*)());
 
-        class Runtime {
-        protected:
-            friend class Work;
+        struct Work;
 
-            virtual std::vector<Work *> getWorks()=0;
+        class Runtime {
+        public:
+
+            friend struct Work;
 
             virtual const std::ostream &out() = 0;
 
-            virtual std::vector::iterator<Work *> getIterator()=0;
+            virtual std::vector<Work *>::iterator getIterator()=0;
 
             virtual void jumpTo(const std::string &s)=0;
 
@@ -75,7 +77,7 @@ namespace mis {
 
     private:
         Parser *parser;
-        std::ostream* stream;
+        std::ostream *stream;
         std::string buffer;
     };
 }

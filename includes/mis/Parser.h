@@ -16,7 +16,7 @@ namespace mis {
 
         friend class Builder;
 
-        typedef mis::VirtualMachine::Work *(*UnitBuilder)(std::vector<Parser::Token> &args);
+        typedef VirtualMachine::Work *(*UnitBuilder)(std::vector<Parser::Token> &args);
 
         typedef Token *(*Filter)(const std::string &s);
 
@@ -24,14 +24,14 @@ namespace mis {
 
         ~Parser();
 
-        std::vector<mis::VirtualMachine::Work *> parse(const std::string &lines);
+        std::vector<VirtualMachine::Work *> parse(const std::string &lines);
 
     private:
         std::map<std::string, UnitBuilder> map;
         std::vector<Filter> filters;
         std::vector<Linker> linkers;
 
-        mis::VirtualMachine::Work *parseUnit(const std::string &line);
+        VirtualMachine::Work *parseUnit(const std::string &line);
 
         Parser(std::map<std::string, UnitBuilder> &map, std::vector<Filter> &filters);
 
@@ -42,13 +42,13 @@ namespace mis {
 
             void registerFilter(Filter filter);
 
-            bool registerBuilder(const std::string &instruction, UnitBuilder builder);
+            bool registerInstructionBuilder(const std::string &instruction, UnitBuilder builder);
 
             void registerLinker(Linker combiner);
 
         private:
-            std::map<std::string, UnitBuilder> map;
             std::vector<Filter> filters;
+            std::map<std::string, UnitBuilder> map;
             std::vector<Linker> linkers;
         };
 

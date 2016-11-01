@@ -14,7 +14,7 @@ namespace mis {
     };
 
     static void registerInst(Parser::Builder &parser) {
-        parser.registerBuilder("ADD", [](std::vector<Parser::Token> &args) {
+        parser.registerInstructionBuilder("ADD", [](std::vector<Parser::Token> &args) {
             VirtualMachine::Work *p = nullptr;
 
             return p;

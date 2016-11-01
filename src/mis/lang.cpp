@@ -14,7 +14,7 @@ namespace mis {
 
     long Numeric::asNumeric() {
         return l;
-    };
+    }
 
     Real::Real(double v) : d(v) {};
 

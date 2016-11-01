@@ -4,12 +4,12 @@
 
 #include "mis/VirtualMachine.h"
 #include <iostream>
-
+#include <map>
 
 namespace mis {
     class RuntimeImpl : virtual public VirtualMachine::Runtime {
     private:
-        std::vector<Work *> units;
+        std::vector<VirtualMachine::Work *>::iterator itr;
         const std::ostream *outS;
         std::map<std::string, CharSequence *> charsPool;
         std::map<std::string, Number *> numberPool;
@@ -18,22 +18,23 @@ namespace mis {
 
     public:
         RuntimeImpl(std::vector<VirtualMachine::Work *> &&units,
-                    std::ostream *input) : outS(input), units(units) {
-            current = 0;
-            for (current; current < units.size(); ++current) {
-                VirtualMachine::Runtime &runtime = *dynamic_cast<VirtualMachine::Runtime *> (this);
-                units[current]->performance(runtime);
-            }
+                    std::ostream *input) : outS(input) {
+            VirtualMachine::Runtime &runtime = *dynamic_cast<VirtualMachine::Runtime *> (this);
+            for (itr = units.begin(); itr != units.end(); ++itr)
+                (*itr)->performance(runtime);
         }
 
         ~RuntimeImpl() {
             for (std::pair<std::string, Number *> pair: numberPool)delete (pair.second);
             for (std::pair<std::string, CharSequence *> pair: charsPool)delete (pair.second);
-            for (Work *work:units)delete (work);
         }
 
     protected:
         virtual const std::ostream &out() { return *outS; };
+
+        virtual std::vector<VirtualMachine::Work *>::iterator getIterator() override {
+            return itr;
+        }
 
         virtual void jumpTo(const std::string &s) {
             if (labelMap.find(s) != labelMap.end()) {
@@ -42,7 +43,7 @@ namespace mis {
         };
 
         virtual void mark(std::string &s) {
-            labelMap[s] = current;
+            std::vector<mis::VirtualMachine::Work *>::pointer pointer = itr.operator->();
         };
 
         virtual CharSequence *allocate(std::string &s, CharSequence &charSequence) {
@@ -97,11 +98,13 @@ mis::VirtualMachine &mis::VirtualMachine::operator<<(const std::string &code) {
     return *this;
 }
 
+#include "mis/Parser.h"
+
 mis::VirtualMachine &mis::VirtualMachine::end() {
     if (!this->buffer.empty()) {
         const std::string lines = buffer;
-        std::thread([parser, lines] {
-            RuntimeImpl(parser->parse(lines), stream);
+        std::thread([this, lines] {
+            RuntimeImpl(this->parser->parse(lines), this->stream);
         });
     }
     return *this;
