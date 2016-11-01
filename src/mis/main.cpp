@@ -9,7 +9,6 @@ struct WorkAdd : public mis::VirtualMachine::Work {
     std::vector<mis::Number> numbers;
 
     virtual void performance(mis::VirtualMachine::Runtime &runtime) {
-        runtime.getNumber(targetName)=sum;
     }
 };
 
@@ -18,7 +17,6 @@ mis::VirtualMachine::Work *any(std::vector<mis::Parser::Token> &args) {
     if (first.getType() == mis::Parser::Token::Type::VAR) {
 
     } else {
-        throw std::bad_exception;
     }
 }
 
