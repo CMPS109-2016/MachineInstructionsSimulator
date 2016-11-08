@@ -11,6 +11,8 @@
 
 namespace mis {
     std::vector<std::string> &split(const std::string &s, const std::string &delim, std::vector<std::string> &vector);
+
+    int get_type(std::string &s);
 }
 
 #endif

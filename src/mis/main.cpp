@@ -3,26 +3,34 @@
 #include "mis/strutil.h"
 #include "mis/Parser.h"
 
+class A {
+public:
+    int v;
 
-struct WorkAdd : public mis::VirtualMachine::Work {
-    std::string &targetName;
-    std::vector<mis::Number> numbers;
-
-    virtual void performance(mis::VirtualMachine::Runtime &runtime) {
+    A(int v) : v(v) {
+        std::cout << "A con" << std::endl;
     }
 };
 
-mis::VirtualMachine::Work *any(std::vector<mis::Parser::Token> &args) {
-    mis::Parser::Token first = args[0];
-    if (first.getType() == mis::Parser::Token::Type::VAR) {
-
-    } else {
+class B : virtual public A {
+public:
+    B(int v) : A(v) {
+        std::cout << "B con" << std::endl;
     }
-}
+};
+
+class C : public B, virtual public A {
+public:
+    C(int v) : A(v), B(v) {}
+};
 
 int main() {
-    mis::Parser::Builder builder;
-    builder.registerInstructionBuilder("ADD", any);
 
+    std::string s = "abbbba";
+
+    s.erase(s.begin());
+    s.erase(s.end() - 1);
+    std::cout << s << std::endl;
+//    C c(1);
     return 0;
 }

@@ -33,4 +33,18 @@ namespace mis {
             vector.push_back(s.substr(last, index - last));
         return vector;
     }
+
+    int get_type(std::string &s) {
+        bool hasPoint = false;
+        for (int i = 0; i < s.length(); ++i) {
+            char c = s[i];
+            if (c < '0' || c > '9') {
+                if (c == '.' && !hasPoint)
+                    hasPoint = true;
+                else
+                    return -1;
+            }
+        }
+        return hasPoint ? 1 : 0;
+    }
 }

@@ -6,38 +6,90 @@
 #define MACHINEINSTRUCTIONSSIMULATOR_LANG_H
 
 #include <string>
+#include <functional>
 
 namespace mis {
-    struct Number {
-        virtual double asReal()=0;
-
-        virtual long asNumeric()=0;
+    struct Base {
+        virtual std::string &&to_string()=0;
     };
 
-    class Numeric : public Number {
-    private:
-        long l;
+    struct Number : public virtual Base {
     public:
-        Numeric(long);
+        double asReal();
 
-        virtual double asReal() override;
+        long asNumeric();
 
-        virtual long asNumeric() override;
-    };
+        bool isReal();
 
-    class Real : public Number {
+        bool isNumeric();
+
+        Number(long);
+
+        Number(double);
+
+        Number(Number &);
+
+        Number(Number &&);
+
+        virtual Number &&operator+(Number &n);
+
+        virtual Number &&operator+(Number &&n);
+
+        virtual Number &operator+=(Number &n);
+
+        virtual Number &operator+=(Number &&n);
+
+        virtual Number &&operator-(Number &n);
+
+        virtual Number &&operator-(Number &&n);
+
+        virtual Number &operator-=(Number &n);
+
+        virtual Number &operator-=(Number &&n);
+
+        virtual Number &&operator*(Number &n);
+
+        virtual Number &&operator*(Number &&n);
+
+        virtual Number &operator*=(Number &n);
+
+        virtual Number &operator*=(Number &&n);
+
+        virtual Number &&operator/(Number &n);
+
+        virtual Number &&operator/(Number &&n);
+
+        virtual Number &operator/=(Number &n);
+
+        virtual Number &operator/=(Number &&n);
+
+        virtual bool operator==(long);
+
+        virtual bool operator==(int);
+
+        virtual bool operator==(double);
+
+        virtual Number &operator=(Number &n);
+
+        virtual Number &operator=(Number &&n);
+
+
+        virtual std::string &&to_string() override;
+
     private:
-        double d;
-    public:
-        Real(double);
+        union { long l; double d; } data;
+        bool type;
 
-        virtual double asReal() override;
-
-        virtual long asNumeric() override;
+        inline void _assign(Number &n, auto);
     };
 
-    struct CharSequence {
+    template<typename T>
+    using Supplier = std::function<T(void)>;
+
+    struct CharSequence : public virtual Base {
         virtual const char *getAsCharArray()=0;
+
+        virtual int length()=0;
     };
 
     class String : public CharSequence {
@@ -46,7 +98,19 @@ namespace mis {
     public:
         String(const char *s);
 
+        String(char *s);
+
+        ~String();
+
+        virtual void setCharAt(int idx, char c);
+
+        virtual char getCharAt(int idx);
+
         virtual const char *getAsCharArray() override;
+
+        virtual std::string &&to_string() override;
+
+        virtual int length() override;
     };
 
     class Char : public CharSequence {
@@ -55,26 +119,24 @@ namespace mis {
     public:
         Char(char c);
 
+        virtual char getChar();
+
         virtual const char *getAsCharArray() override;
+
+        virtual std::string &&to_string() override;
+
+        virtual int length() override;
+    };
+
+    struct Terminable {
+        virtual void terminate()=0;
+
+        virtual bool isTerminated()=0;
     };
 
     template<typename T>
-    class Optional {
-    private:
-        T *value;
-
-        Optional(T *v);
-
-    public:
-        static Optional<T> empty();
-
-        static Optional<T> nullable(T *v);
-
-        bool isPresent();
-
-        void ifPresent(void (*)(T *value));
-
-        T *get();
+    struct Predicate {
+        virtual bool accept(T t) const =0;
     };
 
     template<class T>

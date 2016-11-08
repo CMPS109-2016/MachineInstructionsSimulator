@@ -14,13 +14,11 @@ namespace mis {
     public:
         struct Token;
 
-        friend class Builder;
+        using Filter = std::function<mis::Parser::Token *( std::string &)>;
 
-        typedef VirtualMachine::Work *(*UnitBuilder)(std::vector<Parser::Token> &args);
+        using UnitBuilder = std::function<mis::VirtualMachine::Work *(std::vector<Parser::Token> &)>;
 
-        typedef Token *(*Filter)(const std::string &s);
-
-        typedef void (*Linker)(std::vector<VirtualMachine::Work *> &works);
+        using Linker = std::function<void(std::vector<VirtualMachine::Work *> &)>;
 
         ~Parser();
 
@@ -52,16 +50,17 @@ namespace mis {
             std::vector<Linker> linkers;
         };
 
-        struct Token {
+        class Token {
+        public:
             enum class Type {
-                REAL, NUMERIC, CHAR, STRING, LABEL, VAR, TYPE
+                NUMBER, CHAR, STRING, PLAIN_TEXT, TYPE
             };
 
             union Data {
                 long numeric;
                 double real;
                 char character;
-                char *string;
+                const char* string;
             };
 
             Type getType() const;
@@ -77,7 +76,5 @@ namespace mis {
             Type type;
         };
     };
-
-
 }
 #endif //MACHINEINSTRUCTIONSSIMULATOR_PARSER_H

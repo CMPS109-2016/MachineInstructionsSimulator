@@ -10,17 +10,13 @@
 #include <thread>
 #include <mutex>
 #include "lang.h"
+#include "Executor.h"
 
 namespace mis {
     class Parser;
 
-    class VirtualMachine {
+    class VirtualMachine : public Terminable {
     public:
-        template<typename T>
-        struct Callback {
-            virtual void call(T &v)=0;
-        };
-
         VirtualMachine &operator()(std::ostream &ostream);
 
         VirtualMachine &operator<<(const std::string &code);
@@ -29,18 +25,10 @@ namespace mis {
 
         struct Work;
 
-        class Runtime {
-        public:
-
-            friend struct Work;
-
-            virtual const std::ostream &out() = 0;
+        struct Runtime {
+            virtual std::ostream *out()=0;
 
             virtual std::vector<Work *>::iterator getIterator()=0;
-
-            virtual void jumpTo(const std::string &s)=0;
-
-            virtual void mark(std::string &s)=0;
 
             virtual CharSequence *allocate(std::string &s, CharSequence &charSequence)=0;
 
@@ -49,34 +37,28 @@ namespace mis {
             virtual Number *getNumber(std::string &s)=0;
 
             virtual CharSequence *getChars(std::string &s)=0;
+
+            virtual void report(const std::string &errorMessage, bool exit = false)=0;
         };
 
         struct Work {
             virtual void performance(Runtime &runtime)=0;
         };
 
-        template<typename T>
-        class Future {
-        public:
-            T get();
+        void run(std::vector<Work *> works);
 
-            bool isDone();
+        virtual bool isTerminated() override;
 
-            void atDone(Callback<T> callback);
-
-            void atFailure(Callback<std::exception> callback);
-        };
-
-        Future<void> submit(std::vector<Work *> works);
-
-        bool isTerminated();
-
-        void terminate();
+        virtual void terminate() override;
 
         VirtualMachine &end();
 
+        VirtualMachine(Parser *parser, Executor *executor);
+
     private:
         Parser *parser;
+        Executor *executor;
+
         std::ostream *stream;
         std::string buffer;
     };

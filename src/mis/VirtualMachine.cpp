@@ -10,11 +10,9 @@ namespace mis {
     class RuntimeImpl : virtual public VirtualMachine::Runtime {
     private:
         std::vector<VirtualMachine::Work *>::iterator itr;
-        const std::ostream *outS;
+        std::ostream *outS;
         std::map<std::string, CharSequence *> charsPool;
         std::map<std::string, Number *> numberPool;
-        std::map<std::string, int> labelMap;
-        int current;
 
     public:
         RuntimeImpl(std::vector<VirtualMachine::Work *> &&units,
@@ -29,22 +27,15 @@ namespace mis {
             for (std::pair<std::string, CharSequence *> pair: charsPool)delete (pair.second);
         }
 
-    protected:
-        virtual const std::ostream &out() { return *outS; };
+        virtual std::ostream *out() { return outS; };
+
+        virtual void report(const std::string &errorMessage, bool exit) override {
+
+        }
 
         virtual std::vector<VirtualMachine::Work *>::iterator getIterator() override {
             return itr;
         }
-
-        virtual void jumpTo(const std::string &s) {
-            if (labelMap.find(s) != labelMap.end()) {
-                current = labelMap[s] + 1;
-            }
-        };
-
-        virtual void mark(std::string &s) {
-            std::vector<mis::VirtualMachine::Work *>::pointer pointer = itr.operator->();
-        };
 
         virtual CharSequence *allocate(std::string &s, CharSequence &charSequence) {
             mis::CharSequence *p = nullptr;
@@ -59,13 +50,8 @@ namespace mis {
         };
 
         virtual Number *allocate(std::string &s, Number &n) {
-            mis::Number *p = nullptr;
-            if (dynamic_cast<mis::Real *>(&n))
-                p = new mis::Real(n.asReal());
-            else if (dynamic_cast<mis::Numeric *>(&n))
-                p = new mis::Numeric(n.asNumeric());
-            if (p)
-                numberPool[s] = p;
+            mis::Number *p = new mis::Number(n);
+            numberPool[s] = p;
             return p;
         };
 
@@ -85,12 +71,11 @@ namespace mis {
 //    return future;
 //}
 
-mis::VirtualMachine::Future<void> mis::VirtualMachine::submit(std::vector<mis::VirtualMachine::Work *> works) {
+void mis::VirtualMachine::run(std::vector<mis::VirtualMachine::Work *> works) {
 //    Runtime &runtime = *new RuntimeImpl(works, std::cout);
 //    for (Work *work: works) {
 //        work->performance(runtime);
 //    }
-    return mis::VirtualMachine::Future<void>();
 }
 
 mis::VirtualMachine &mis::VirtualMachine::operator<<(const std::string &code) {
@@ -118,5 +103,16 @@ mis::VirtualMachine &mis::VirtualMachine::operator()(std::ostream &ostream) {
     stream = &ostream;
     return *this;
 }
+
+bool mis::VirtualMachine::isTerminated() {
+    return false;
+}
+
+void mis::VirtualMachine::terminate() {
+
+}
+
+mis::VirtualMachine::VirtualMachine(mis::Parser *parser, mis::Executor *executor) : parser(parser),
+                                                                                    executor(executor) {}
 
 

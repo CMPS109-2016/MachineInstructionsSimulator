@@ -2,37 +2,46 @@
 // Created by CIJhn on 10/29/2016.
 //
 
+#include <mis/lang.h>
 #include "mis/lang.h"
 
 namespace mis {
+    static inline Number &&performance(Number &a, Number &b, auto op);
 
-    Numeric::Numeric(long v) : l(v) {};
-
-    double Numeric::asReal() {
-        return (double) l;
-    };
-
-    long Numeric::asNumeric() {
-        return l;
-    }
-
-    Real::Real(double v) : d(v) {};
-
-    double Real::asReal() {
-        return d;
-    };
-
-    long Real::asNumeric() {
-        return (long) d;
-    };
-
+    static auto ADD = [](auto &&a, auto &&b) { return a + b; };
+    static auto SUB = [](auto &&a, auto &&b) { return a - b; };
+    static auto MUL = [](auto &&a, auto &&b) { return a * b; };
+    static auto DIV = [](auto &&a, auto &&b) { return a * b; };
 
     const char *String::getAsCharArray() {
         return string.data();
     }
 
+    String::String(char *s) {
+        this->string = *new std::string(s);
+    }
+
     String::String(const char *s) {
         this->string = *new std::string(s);
+    }
+
+    std::string &&String::to_string() {
+        return std::move(std::string(string));
+    }
+
+    int String::length() {
+        return (int) string.length();
+    }
+
+    String::~String() {
+    }
+
+    char String::getCharAt(int idx) {
+        return string.at(idx);
+    }
+
+    void String::setCharAt(int idx, char c) {
+        this->string.assign(idx, c);
     };
 
     const char *Char::getAsCharArray() {
@@ -41,36 +50,151 @@ namespace mis {
 
     Char::Char(char c) {
         this->c = c;
+    }
+
+    std::string &&Char::to_string() {
+        return std::move(std::string(&c));
+    }
+
+    char Char::getChar() {
+        return c;
+    }
+
+    int Char::length() {
+        return 1;
     };
 
-    template<typename T>
-    bool Optional<T>::isPresent() {
-        return value != nullptr;
+    double Number::asReal() { return data.d; }
+
+    long Number::asNumeric() { return data.l; }
+
+    bool Number::isNumeric() { return type; }
+
+    bool Number::isReal() { return !isNumeric(); }
+
+    Number::Number(long l) : type(true) {
+        data.l = l;
     }
 
-    template<typename T>
-    T *Optional<T>::get() {
-        return value;
+    Number::Number(double d) : type(false) {
+        data.d = d;
     }
 
-    template<typename T>
-    void Optional<T>::ifPresent(void (*func)(T *)) {
-        if (isPresent())
-            func(this->value);
+    Number::Number(Number &n) : data(n.data), type(n.type) {}
+
+    Number::Number(Number &&n) : data(n.data), type(n.type) {}
+
+    Number &&Number::operator+(Number &n) { return performance(n, *this, ADD); }
+
+    Number &&Number::operator+(Number &&n) { return performance(n, *this, ADD); }
+
+    Number &Number::operator+=(Number &n) {
+        _assign(n, ADD);
+        return *this;
     }
 
-    template<typename T>
-    Optional<T>::Optional(T *v) :value(v) {
+    Number &Number::operator+=(Number &&n) {
+        _assign(n, ADD);
+        return *this;
+    }
+
+    Number &&Number::operator*(Number &n) { return performance(n, *this, MUL); }
+
+    Number &&Number::operator*(Number &&n) { return performance(n, *this, MUL); }
+
+    Number &Number::operator*=(Number &n) {
+        _assign(n, MUL);
+        return *this;
     }
 
 
-    template<typename T>
-    Optional<T> Optional<T>::empty() {
-        return Optional<T>(nullptr);
+    Number &Number::operator*=(Number &&n) {
+        _assign(n, MUL);
+        return *this;
     }
 
-    template<typename T>
-    Optional<T> Optional<T>::nullable(T *v) {
-        return Optional<T>(v);
+    Number &&Number::operator-(Number &n) {
+        return performance(*this, n, SUB);
+    }
+
+    Number &&Number::operator-(Number &&n) {
+        return performance(*this, n, SUB);
+    }
+
+    Number &Number::operator-=(Number &n) {
+        _assign(n, SUB);
+        return *this;
+    }
+
+    Number &Number::operator-=(Number &&n) {
+        _assign(n, SUB);
+        return *this;
+    }
+
+    Number &&Number::operator/(Number &n) {
+        return performance(*this, n, DIV);
+    }
+
+    Number &&Number::operator/(Number &&n) {
+        return performance(*this, n, DIV);
+    }
+
+    Number &Number::operator/=(Number &n) {
+        _assign(n, DIV);
+        return *this;
+    }
+
+    Number &Number::operator/=(Number &&n) {
+        _assign(n, DIV);
+        return *this;
+    }
+
+    bool Number::operator==(long l) {
+        return this->isNumeric() ? data.l == l : data.d == l;
+    }
+
+    bool Number::operator==(double d) {
+        return this->isNumeric() ? data.l == d : data.d == d;
+    }
+
+    void Number::_assign(Number &n, auto op) {
+        if (this->isNumeric())
+            if (n.isNumeric())
+                this->data.l = op(data.l, n.asNumeric());
+            else
+                this->data.d = op(data.l, n.asReal());
+        else if (n.isNumeric())
+            data.d = op(data.d, n.asNumeric());
+        else data.d *= op(data.d, n.asReal());
+    }
+
+    std::string &&Number::to_string() {
+        return std::move(isNumeric() ? std::to_string(data.l) : std::to_string(data.d));
+    }
+
+    Number &Number::operator=(Number &n) {
+        this->data = n.data;
+        this->type = n.type;
+        return *this;
+    }
+
+    Number &Number::operator=(Number &&n) {
+        this->data = n.data;
+        this->type = n.type;
+        return *this;
+    }
+
+    bool Number::operator==(int i) {
+        return this->isNumeric() ? data.l == i : data.d == i;
+    }
+
+    static inline Number &&performance(Number &a, Number &b, auto op) {
+        if (a.isNumeric())
+            if (b.isNumeric())
+                return std::move(Number(op(a.asNumeric(), b.asNumeric())));
+            else return std::move(Number(op(a.asNumeric(), b.asReal())));
+        else if (b.isNumeric())
+            return std::move(Number(op(a.asReal(), b.asNumeric())));
+        else return std::move(Number(op(a.asReal(), b.asReal())));
     }
 }
