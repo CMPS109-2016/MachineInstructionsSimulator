@@ -47,4 +47,53 @@ namespace mis {
         }
         return hasPoint ? 1 : 0;
     }
+
+    void trim(std::string &s) {
+        s.erase(0, s.find_first_not_of(" "));
+        s.erase(0, s.find_first_not_of("\t"));
+        s.erase(s.find_last_not_of(" ") + 1);
+        s.erase(s.find_last_not_of("\r") + 1);
+        s.erase(s.find_last_not_of("\n") + 1);
+        s.erase(s.find_last_not_of("\t") + 1);
+    }
+
+
+    std::vector<std::string> &
+    splitDetectStringChar(const std::string &s, char delim, std::vector<std::string> &vector) {
+        std::string temp(s);
+        std::string::size_type last = 0;
+        int embracedState = 0;
+        for (std::string::size_type current = 0; current < s.length(); ++current) {
+            char c = temp[current];
+            if (c == delim && embracedState == 0) {
+                vector.push_back(std::string(temp, last, current - last));
+                last = current + 1;
+            } else if (c == '\'') {
+                if (embracedState == 0)
+                    embracedState = -1;
+                else if (embracedState == -1)
+                    embracedState = 0;
+                else {
+                    //syntax error: "xxxx'
+                    throw std::bad_exception();
+                }
+            } else if (c == '\"') {
+                if (embracedState == 0)
+                    embracedState = 1;
+                else if (embracedState == 1)
+                    embracedState = 0;
+                else {
+                    //syntax error: 'xxxx"
+                    throw std::bad_exception();
+                }
+            }
+        }
+
+        if (embracedState != 0) {
+            throw std::bad_exception();
+        }
+        if (last != s.length())
+            vector.push_back(std::string(temp, last, s.length() - last));
+        return vector;
+    }
 }

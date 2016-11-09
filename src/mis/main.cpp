@@ -25,12 +25,19 @@ public:
 };
 
 int main() {
+    std::string s("a \"inside\n test\"\nc \'d\'");
 
-    std::string s = "abbbba";
+    std::vector<std::string> vector;
+    try {
+        mis::splitDetectStringChar(s, '\n', vector);
+        for (std::string t:vector) {
+            std::cout << t << std::endl;
+            std::cout << std::endl;
+        }
+    } catch (std::bad_exception e) {
+        std::cout << "exception" << std::endl;
+    }
 
-    s.erase(s.begin());
-    s.erase(s.end() - 1);
-    std::cout << s << std::endl;
 //    C c(1);
     return 0;
 }

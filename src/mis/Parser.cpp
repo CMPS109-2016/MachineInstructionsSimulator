@@ -18,6 +18,7 @@ namespace mis {
         if (map.find(inst) != map.end()) {
             UnitBuilder ub = map[inst];
             const std::string &args = arguments;
+
             std::string::size_type last = 0;
             int embracedState = 0;
             for (std::string::size_type current = 0; current < args.length(); ++current) {
@@ -45,6 +46,7 @@ namespace mis {
                     }
                 }
             }
+
             if (embracedState != 0) {
                 throw std::bad_exception();
             }
@@ -69,6 +71,8 @@ namespace mis {
     Parser::~Parser() {}
 
     std::vector<VirtualMachine::Work *> Parser::parse(const std::string &lines) {
+        std::string temp(lines);
+        trim(temp);
         std::vector<VirtualMachine::Work *> r;
         std::vector<std::string> buffer;
         mis::split(lines, "\n", buffer);

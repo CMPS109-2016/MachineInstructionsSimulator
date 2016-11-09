@@ -73,7 +73,6 @@ namespace mis {
 
         virtual Number &operator=(Number &&n);
 
-
         virtual std::string &&to_string() override;
 
     private:

@@ -36,12 +36,17 @@ namespace mis {
     protected:
         std::string &target;
         std::vector<NGetter *> src;
+
     public:
+        WorkVarArgs(std::string &target, const std::vector<NGetter *> &src) : target(target), src(src) {}
+
         virtual void performance(VirtualMachine::Runtime &runtime)=0;
     };
 
     class WorkAdd : public WorkVarArgs {
     public:
+        WorkAdd(std::string &target, const std::vector<NGetter *> &src) : WorkVarArgs(target, src) {}
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             Number *n = runtime.getNumber(target);
             if (n != nullptr) {
@@ -59,6 +64,13 @@ namespace mis {
         NGetter *a, *b;
 
     public:
+        WorkSub(std::string &target, NGetter *a, NGetter *b) : target(target), a(a), b(b) {}
+
+        virtual ~WorkSub() {
+            delete (a);
+            delete (b);
+        }
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             Number *np = runtime.getNumber(target);
             if (np != nullptr)
@@ -71,6 +83,13 @@ namespace mis {
         NGetter *a, *b;
 
     public:
+        WorkDiv(std::string &target, NGetter *a, NGetter *b) : target(target), a(a), b(b) {}
+
+        virtual ~WorkDiv() {
+            delete (a);
+            delete (b);
+        }
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             Number *np = runtime.getNumber(target);
             if (np != nullptr) {
@@ -85,6 +104,8 @@ namespace mis {
 
     class WorkMul : public WorkVarArgs {
     public:
+        WorkMul(std::string &target, const std::vector<NGetter *> &src) : WorkVarArgs(target, src) {}
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             Number *n = runtime.getNumber(target);
             if (n != nullptr) {
@@ -154,6 +175,8 @@ namespace mis {
         std::vector<Getter<Base *> *> getters;
 
     public:
+        WorkOut(const std::vector<Getter<mis::Base *> *> &getters) : getters(getters) {}
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             for (Getter<Base *> *getter :getters)
                 *runtime.out() << (*getter)(runtime)->to_string();
@@ -165,6 +188,15 @@ namespace mis {
         Getter<Number *> *idx;
         Getter<Char *> *cha;
     public:
+        WorkSetStrChar(std::string &varName, Getter<mis::Number *> *idx, Getter<mis::Char *> *cha) : varName(varName),
+                                                                                                     idx(idx),
+                                                                                                     cha(cha) {}
+
+        virtual ~WorkSetStrChar() {
+            delete (idx);
+            delete (cha);
+        }
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             CharSequence *p = runtime.getChars(varName);
             if (dynamic_cast<String *>(p)) {
@@ -184,6 +216,15 @@ namespace mis {
         Getter<Number *> *idx;
         std::string &targetVarName;
     public:
+        WorkGetStrChar(std::string &varName, Getter<mis::Number *> *idx, std::string &targetVarName) : varName(varName),
+                                                                                                       idx(idx),
+                                                                                                       targetVarName(
+                                                                                                               targetVarName) {}
+
+        virtual ~WorkGetStrChar() {
+            delete (idx);
+        }
+
         virtual void performance(VirtualMachine::Runtime &runtime) override {
             CharSequence *p = runtime.getChars(varName);
             if (dynamic_cast<String *>(p)) {
@@ -202,7 +243,7 @@ namespace mis {
     };
 
 
-    void reg(Parser::Builder &builder) {
+    void registerDefault(Parser::Builder &builder) {
         builder.registerFilter([](std::string &str) {
             mis::Parser::Token *pt = nullptr;
             if (str.at(0) == '$') {
@@ -266,6 +307,10 @@ namespace mis {
             return pt;
         });
 
+//        builder.registerInstructionBuilder("ADD", [](std::vector<Parser::Token> &tokens) {
+//            //mis::VirtualMachine::Work *
+//
+//        });
     }
 
 }
