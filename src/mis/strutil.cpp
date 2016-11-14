@@ -2,6 +2,8 @@
 // Created by CIJhn on 10/28/2016.
 //
 #include "mis/strutil.h"
+#include <fstream>
+#include <iostream>
 
 namespace mis {
 //    template<std::size_t size>
@@ -60,7 +62,7 @@ namespace mis {
 
     std::vector<std::string> &
     splitDetectStringChar(const std::string &s, char delim, std::vector<std::string> &vector) {
-        std::string temp(s);
+        std::string temp = s;
         std::string::size_type last = 0;
         int embracedState = 0;
         for (std::string::size_type current = 0; current < s.length(); ++current) {
@@ -95,5 +97,42 @@ namespace mis {
         if (last != s.length())
             vector.push_back(std::string(temp, last, s.length() - last));
         return vector;
+    }
+
+    std::vector<std::string> &readFileByLines(std::string &filename, std::vector<std::string> &vector, int bufferSize) {
+        char buff[bufferSize];
+        std::ifstream ifstream(filename);
+        while (!ifstream.eof()) {
+            ifstream.getline(buff, bufferSize);
+            vector.push_back(buff);
+        }
+        return vector;
+    }
+
+    std::vector<std::string> &
+    readFileByLines(std::string &&filename, std::vector<std::string> &vector, int bufferSize) {
+        char buff[bufferSize];
+        std::ifstream ifstream(filename);
+        while (!ifstream.eof()) {
+            ifstream.getline(buff, bufferSize);
+            vector.push_back(buff);
+        }
+        return vector;
+    }
+
+    std::string readFileToString(std::string &filename) {
+        std::ifstream ifstream(filename);
+        std::string s = std::string(std::istreambuf_iterator<char>(ifstream),
+                                    std::istreambuf_iterator<char>());
+        ifstream.close();
+        return s;
+    }
+
+    std::string readFileToString(std::string &&filename) {
+        std::ifstream ifstream(filename);
+        std::string s = std::string(std::istreambuf_iterator<char>(ifstream),
+                                    std::istreambuf_iterator<char>());
+        ifstream.close();
+        return s;
     }
 }

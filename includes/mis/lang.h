@@ -9,18 +9,40 @@
 #include <functional>
 
 namespace mis {
+    /**
+     * An easy super-class for all the mis base class that need to be printed.
+     */
     struct Base {
+
+        /**
+         * Transfer this instance to string.
+         * */
         virtual std::string &&to_string()=0;
     };
 
+    /**
+     * Box the basic number calculation boxing.
+     * */
     struct Number : public virtual Base {
     public:
+        /**
+         * Cast this number to a real.
+         * */
         double asReal();
 
+        /**
+        * Cast this number to a mimeric.
+        * */
         long asNumeric();
 
+        /**
+         * If this number is a real.
+         * */
         bool isReal();
 
+        /**
+        * If this number is a mimeric.
+        * */
         bool isNumeric();
 
         Number(long);
@@ -69,6 +91,28 @@ namespace mis {
 
         virtual bool operator==(double);
 
+        virtual bool operator!=(int);
+
+        virtual bool operator!=(long);
+
+        virtual bool operator!=(double);
+
+        virtual bool operator>(Number &n);
+
+        virtual bool operator>(Number &&n);
+
+        virtual bool operator>=(Number &n);
+
+        virtual bool operator>=(Number &&n);
+
+        virtual bool operator<(Number &n);
+
+        virtual bool operator<(Number &&n);
+
+        virtual bool operator<=(Number &n);
+
+        virtual bool operator<=(Number &&n);
+
         virtual Number &operator=(Number &n);
 
         virtual Number &operator=(Number &&n);
@@ -89,6 +133,8 @@ namespace mis {
         virtual const char *getAsCharArray()=0;
 
         virtual int length()=0;
+
+        virtual std::string &&to_string() =0;
     };
 
     class String : public CharSequence {
@@ -135,8 +181,13 @@ namespace mis {
 
     template<typename T>
     struct Predicate {
-        virtual bool accept(T t) const =0;
+        virtual bool accept(T v) const =0;
     };
+
+    template<typename Base, typename T>
+    inline bool instanceof(T *ptr) {
+        return dynamic_cast<Base *>(ptr) != nullptr;
+    }
 
     template<class T>
     struct typeref {};

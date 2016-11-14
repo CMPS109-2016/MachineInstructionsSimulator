@@ -1,43 +1,39 @@
 #include <iostream>
 #include <functional>
+#include <mis/restriction.h>
+
 #include "mis/strutil.h"
-#include "mis/Parser.h"
+#include "mis/default_instructions.h"
+#include <fstream>
 
-class A {
-public:
-    int v;
+mis::VirtualMachine *buildDefaultVM() {
 
-    A(int v) : v(v) {
-        std::cout << "A con" << std::endl;
-    }
-};
+    mis::Parser::Builder builder;
+    mis::registerDefault(builder);
+    mis::Parser *parser = builder.build();
+    return new mis::VirtualMachine(parser, mis::Executor::newBlockExecutor());
+}
 
-class B : virtual public A {
-public:
-    B(int v) : A(v) {
-        std::cout << "B con" << std::endl;
-    }
-};
+void test() {
+    std::string test("VAR $myint,NUMERIC,100\nADD $myint,$myint,100\nOUT $myint");
+    mis::VirtualMachine &vm = *buildDefaultVM();
+    vm(std::cout);
+    vm.parseAndRun(test);
+}
 
-class C : public B, virtual public A {
-public:
-    C(int v) : A(v), B(v) {}
-};
-
-int main() {
-    std::string s("a \"inside\n test\"\nc \'d\'");
-
-    std::vector<std::string> vector;
-    try {
-        mis::splitDetectStringChar(s, '\n', vector);
-        for (std::string t:vector) {
-            std::cout << t << std::endl;
-            std::cout << std::endl;
-        }
-    } catch (std::bad_exception e) {
-        std::cout << "exception" << std::endl;
-    }
-
-//    C c(1);
+int main(int argc, char *argv[]) {
+//    if (argc == 1) {
+//        std::string s(mis::readFileToString(std::string(argv[0])));
+//        mis::VirtualMachine &vm = *buildDefaultVM();
+//        vm.parseAndRun(s);
+//        delete (vm);
+//    }
+    test();
     return 0;
 }
+
+
+
+
+
+

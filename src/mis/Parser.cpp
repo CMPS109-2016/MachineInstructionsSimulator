@@ -2,90 +2,82 @@
 // Created by CIJhn on 10/30/2016.
 //
 
-#include "mis/VirtualMachine.h"
+#include <mis/syntax_exception.h>
+#include <iostream>
 #include "mis/Parser.h"
 #include "mis/strutil.h"
 
-
 namespace mis {
-    VirtualMachine::Work *Parser::parseUnit(const std::string &line) {
-        std::vector<std::string> vec;
+
+    VirtualMachine::Work *Parser::parseUnit(Context &context, const std::string &line) {
 
         std::string::size_type pos = line.find_first_of(" ");
         std::string inst(line, 0, pos);
-        std::string arguments(line, pos, line.length());
+        std::string arguments(line, pos + 1, line.length());
 
-        if (map.find(inst) != map.end()) {
-            UnitBuilder ub = map[inst];
+        auto itr = map.find(inst);
+
+        if (itr != map.end()) {
+            std::vector<std::string> buffer;
+            UnitBuilder *ub = (*itr).second;
             const std::string &args = arguments;
 
-            std::string::size_type last = 0;
-            int embracedState = 0;
-            for (std::string::size_type current = 0; current < args.length(); ++current) {
-                char c = args[current];
-                if (c == ',' && embracedState == 0) {
-                    vec.push_back(std::string(arguments, last, current - last));
-                    last = current;
-                } else if (c == '\'') {
-                    if (embracedState == 0)
-                        embracedState = -1;
-                    else if (embracedState == -1)
-                        embracedState = 0;
-                    else {
-                        //syntax error: "xxxx'
-                        throw std::bad_exception();
-                    }
-                } else if (c == '\"') {
-                    if (embracedState == 0)
-                        embracedState = 1;
-                    else if (embracedState == 1)
-                        embracedState = 0;
-                    else {
-                        //syntax error: 'xxxx"
-                        throw std::bad_exception();
-                    }
-                }
-            }
-
-            if (embracedState != 0) {
-                throw std::bad_exception();
-            }
-
-            std::vector<Parser::Token> tokens;
-            for (std::string &s: vec) {
+            context["%CURRENT_INST%"] = inst;
+            mis::splitDetectStringChar(args, ',', buffer);
+            std::vector<Parser::Token *> tokens;
+            for (std::string &s: buffer) {
                 Token *tp = nullptr;
                 for (Filter filter: filters) {
-                    tp = filter(s);
+                    tp = filter(context, s);
                     if (tp != nullptr)
                         break;
                 }
                 if (tp == nullptr)
                     throw std::bad_exception();
+                tokens.push_back(tp);
             }
 
-            return ub(tokens);
+            VirtualMachine::Work *wp = (*ub).build(context, tokens);
+            for (Parser::Token *token:tokens)
+                delete (token);
+            return wp;
         } else
-            throw std::bad_exception();
+            throw syntax_exception("Not find such Instruction " + inst);
     }
 
-    Parser::~Parser() {}
+    Parser::~Parser() {
+        auto itr = map.begin();
+        while (itr != map.end()) {
+            delete ((*itr).second);
+        }
+    }
 
     std::vector<VirtualMachine::Work *> Parser::parse(const std::string &lines) {
         std::string temp(lines);
         trim(temp);
-        std::vector<VirtualMachine::Work *> r;
+        std::vector<VirtualMachine::Work *> works;
         std::vector<std::string> buffer;
-        mis::split(lines, "\n", buffer);
-        for (std::string &line:  buffer)
-            r.push_back(parseUnit(line));
+        mis::splitDetectStringChar(lines, '\n', buffer);
+        std::map<std::string, std::string> *context = new std::map<std::string, std::string>();
+        for (std::string &line:  buffer) {
+            VirtualMachine::Work *work = parseUnit(*context, line);
+            if (work != nullptr)
+                works.push_back(work);
+            else {
+                std::cerr << "unable to parse line [" + line + "]" << std::endl;
+            }
+        }
         for (Linker link: linkers)
-            link(r);
-        return r;
+            link(works);
+        delete (context);
+        return works;
     }
 
 
-    Parser::Parser(std::map<std::string, Parser::UnitBuilder> &m, std::vector<Parser::Filter> &f) :
-            map(std::move(m)), filters(std::move(f)) {}
+    Parser::Parser(std::map<std::string, Parser::UnitBuilder *> &m, std::vector<Parser::Filter> &f) :
+            map(m), filters(f) {
+    }
+
 
     Parser::Token::Type Parser::Token::getType() const {
         return type;
@@ -95,27 +87,36 @@ namespace mis {
         return data;
     }
 
-    Parser::Token::Token(Parser::Token::Type type, Parser::Token::Data data) : type(type), data(std::move(data)) {
-    }
-
     Parser::Token::~Token() {
-//        if (this->type == Parser::Token::Type::STRING || this->type == Parser::Token::Type::LABEL ||
-//            this->type == Parser::Token::Type::VAR_N || this->type == Parser::Token::Type::TYPE) {
-//        }
     }
 
-    Parser Parser::Builder::build() {
-        return Parser(map, filters);
+    Parser::Token::Token(const Parser::Token &tk) : type(tk.type) {
+        data = tk.getData();
+        raw = tk.raw;
+    }
+
+    const std::string &Parser::Token::asString() const {
+        return raw;
+    }
+
+    Parser::Token::Token(Parser::Token::Type type, const std::string &raw, const Parser::Token::Data &data) : raw(raw),
+                                                                                                              type(type) {
+        this->data = data;
+    }
+
+    Parser *Parser::Builder::build() {
+        return new Parser(map, filters);
     }
 
     void Parser::Builder::registerFilter(Parser::Filter filter) {
         filters.push_back(filter);
     }
 
-    bool Parser::Builder::registerInstructionBuilder(const std::string &instruction, Parser::UnitBuilder builder) {
-        if (map.find(instruction) != map.end())
+    bool Parser::Builder::registerInstructionBuilder(const std::string &instruction, Parser::UnitBuilder *builder) {
+        auto itr = map.find(instruction);
+        if (itr != map.end())
             return false;
-        map[instruction] = builder;
+        this->map[instruction] = builder;
         return true;
     }
 
@@ -123,3 +124,46 @@ namespace mis {
         linkers.push_back(linker);
     }
 }
+
+
+//printf("done filter:");
+//            for (auto tk:tokens) {
+//                Token::Type tp = tk->getType();
+//                switch (tp) {
+//                    case Token::Type::NUMBER:
+//                        printf("NUMBER");
+//                        break;
+//                    case Token::Type::REAL:
+//                        printf("REAL");
+//                        break;
+//                    case Token::Type::CHAR:
+//                        printf("CHAR");
+//                        break;
+//                    case Token::Type::STRING:
+//                        printf("STRING");
+//                        break;
+//                    case Token::Type::PLAIN_TEXT:
+//                        printf("PL_T");
+//                        break;
+//                    case Token::Type::TYPE:
+//                        printf("TYPE");
+//                        break;
+//                    case Token::Type::VAR_NAME:
+//                        printf("V_NAME");
+//                        break;
+//                    case Token::Type::VAR_NUMERIC:
+//                        printf("V_NUMERIC");
+//                        break;
+//                    case Token::Type::VAR_STRING:
+//                        printf("V_STR");
+//                        break;
+//                    case Token::Type::VAR_CHAR:
+//                        printf("V_CHR");
+//                        break;
+//                    case Token::Type::VAR_REAL:
+//                        printf("V_REAL");
+//                        break;
+//                }
+//                printf(" ");
+//            }
+//            printf("\n");

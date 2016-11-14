@@ -2,7 +2,6 @@
 // Created by CIJhn on 10/29/2016.
 //
 
-#include <mis/lang.h>
 #include "mis/lang.h"
 
 namespace mis {
@@ -196,5 +195,65 @@ namespace mis {
         else if (b.isNumeric())
             return std::move(Number(op(a.asReal(), b.asNumeric())));
         else return std::move(Number(op(a.asReal(), b.asReal())));
+    }
+
+    bool Number::operator!=(int i) {
+        return !this->operator==(i);
+    }
+
+    bool Number::operator!=(long l) {
+        return !this->operator==(l);
+    }
+
+    bool Number::operator!=(double d) {
+        return !this->operator==(d);
+    }
+
+    bool Number::operator>(Number &n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l > n.data.l : data.l > n.data.d :
+               n.isNumeric() ? data.d > n.data.l : data.d > n.data.d;
+    }
+
+    bool Number::operator>(Number &&n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l > n.data.l : data.l > n.data.d :
+               n.isNumeric() ? data.d > n.data.l : data.d > n.data.d;
+    }
+
+    bool Number::operator>=(Number &n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l >= n.data.l : data.l >= n.data.d :
+               n.isNumeric() ? data.d >= n.data.l : data.d >= n.data.d;
+    }
+
+    bool Number::operator>=(Number &&n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l >= n.data.l : data.l >= n.data.d :
+               n.isNumeric() ? data.d >= n.data.l : data.d >= n.data.d;
+    }
+
+    bool Number::operator<(Number &n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l < n.data.l : data.l < n.data.d :
+               n.isNumeric() ? data.d < n.data.l : data.d < n.data.d;
+    }
+
+    bool Number::operator<(Number &&n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l < n.data.l : data.l < n.data.d :
+               n.isNumeric() ? data.d < n.data.l : data.d < n.data.d;
+    }
+
+    bool Number::operator<=(Number &n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l <= n.data.l : data.l <= n.data.d :
+               n.isNumeric() ? data.d <= n.data.l : data.d <= n.data.d;
+    }
+
+    bool Number::operator<=(Number &&n) {
+        return this->isNumeric() ?
+               n.isNumeric() ? data.l <= n.data.l : data.l <= n.data.d :
+               n.isNumeric() ? data.d <= n.data.l : data.d <= n.data.d;
     }
 }
