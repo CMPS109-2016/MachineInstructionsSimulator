@@ -3,6 +3,7 @@ project(MachineInstructionsSimulator)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories(includes)
+add_subdirectory(socket)
 
 set(SOURCE_FILES src/mis-core/main.cpp
         includes/mis-core/restriction.h src/mis-core/restriction.cpp
@@ -26,6 +27,7 @@ set(SOURCE_FILES src/mis-core/main.cpp
         src/mis-instructions/instruction_impl.cpp src/mis-core/log.cpp includes/mis-core/log.h)
 
 add_executable(MachineInstructionsSimulator ${SOURCE_FILES})
+
 #
 #project(mis_socket)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
