@@ -2,4 +2,6 @@ language: cpp
 os:
 - linux
 compiler: g++
-script: cmake
+script:
+- cmake ..
+- make
