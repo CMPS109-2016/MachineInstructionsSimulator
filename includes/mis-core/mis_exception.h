@@ -10,9 +10,9 @@
 #include <string>
 
 namespace mis {
-    class syntax_exception : public virtual std::exception {
+    class mis_exception : public virtual std::exception {
     public:
-        syntax_exception(const std::string &error);
+        mis_exception(const std::string &error);
 
         const std::string &getError() const;
     private:

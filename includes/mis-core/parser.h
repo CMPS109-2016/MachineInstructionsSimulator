@@ -38,6 +38,9 @@ namespace mis {
          * */
         using Linker = std::function<void(std::vector<VirtualMachine::Work *> &)>;
 
+        Parser(const std::map<std::string, UnitBuilder *> &map, const std::vector<Filter> &filters,
+               const std::vector<Linker> &linkers);
+
         ~Parser();
 
 
@@ -52,9 +55,6 @@ namespace mis {
         std::vector<Linker> linkers;
 
         VirtualMachine::Work *parseUnit(std::map<std::string, std::string> &context, const std::string &line);
-
-        Parser(std::map<std::string, UnitBuilder *> &map, std::vector<Filter> &filters);
-
     public:
 
         /**
@@ -94,7 +94,7 @@ namespace mis {
              * The all possible types of the token.
              * */
             enum class Type {
-                NUMBER, REAL, CHAR, STRING, PLAIN_TEXT, TYPE, VAR_NAME, VAR_NUMERIC, VAR_STRING, VAR_CHAR, VAR_REAL
+                NUMERIC, REAL, CHAR, STRING, PLAIN_TEXT, TYPE, VAR_NAME, VAR_NUMERIC, VAR_STRING, VAR_CHAR, VAR_REAL
             };
 
             /**

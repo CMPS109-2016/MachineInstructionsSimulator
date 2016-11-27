@@ -2,10 +2,10 @@
 // Created by CIJhn on 10/29/2016.
 //
 
-#include "mis/lang.h"
+#include "mis-core/lang.h"
 
 namespace mis {
-    static inline Number &&performance(Number &a, Number &b, auto op);
+    static inline Number performance(Number &a, Number &b, auto op);
 
     static auto ADD = [](auto &&a, auto &&b) { return a + b; };
     static auto SUB = [](auto &&a, auto &&b) { return a - b; };
@@ -16,16 +16,21 @@ namespace mis {
         return string.data();
     }
 
-    String::String(char *s) {
+    String::String(std::string &&s) : string(s) {
+    }
+
+    String::String(const std::string &s) : string(s) {
+    }
+
+    String::String(char *s) : string(s) {
         this->string = *new std::string(s);
     }
 
-    String::String(const char *s) {
-        this->string = *new std::string(s);
+    String::String(const char *s) : string(s) {
     }
 
-    std::string &&String::to_string() {
-        return std::move(std::string(string));
+    std::string String::to_string() {
+        return std::string(string);
     }
 
     int String::length() {
@@ -36,11 +41,11 @@ namespace mis {
     }
 
     char String::getCharAt(int idx) {
-        return string.at(idx);
+        return string[idx];
     }
 
     void String::setCharAt(int idx, char c) {
-        this->string.assign(idx, c);
+        this->string[idx] = c;
     };
 
     const char *Char::getAsCharArray() {
@@ -51,8 +56,8 @@ namespace mis {
         this->c = c;
     }
 
-    std::string &&Char::to_string() {
-        return std::move(std::string(&c));
+    std::string Char::to_string() {
+        return std::string(1, c);
     }
 
     char Char::getChar() {
@@ -79,13 +84,15 @@ namespace mis {
         data.d = d;
     }
 
-    Number::Number(Number &n) : data(n.data), type(n.type) {}
+    Number::Number(Number &n) : data(n.data), type(n.type) {
+    }
 
-    Number::Number(Number &&n) : data(n.data), type(n.type) {}
+    Number::Number(Number &&n) : data(n.data), type(n.type) {
+    }
 
-    Number &&Number::operator+(Number &n) { return performance(n, *this, ADD); }
+    Number Number::operator+(Number &n) { return performance(n, *this, ADD); }
 
-    Number &&Number::operator+(Number &&n) { return performance(n, *this, ADD); }
+    Number Number::operator+(Number &&n) { return performance(n, *this, ADD); }
 
     Number &Number::operator+=(Number &n) {
         _assign(n, ADD);
@@ -97,9 +104,9 @@ namespace mis {
         return *this;
     }
 
-    Number &&Number::operator*(Number &n) { return performance(n, *this, MUL); }
+    Number Number::operator*(Number &n) { return performance(n, *this, MUL); }
 
-    Number &&Number::operator*(Number &&n) { return performance(n, *this, MUL); }
+    Number Number::operator*(Number &&n) { return performance(n, *this, MUL); }
 
     Number &Number::operator*=(Number &n) {
         _assign(n, MUL);
@@ -112,11 +119,11 @@ namespace mis {
         return *this;
     }
 
-    Number &&Number::operator-(Number &n) {
+    Number Number::operator-(Number &n) {
         return performance(*this, n, SUB);
     }
 
-    Number &&Number::operator-(Number &&n) {
+    Number Number::operator-(Number &&n) {
         return performance(*this, n, SUB);
     }
 
@@ -130,11 +137,11 @@ namespace mis {
         return *this;
     }
 
-    Number &&Number::operator/(Number &n) {
+    Number Number::operator/(Number &n) {
         return performance(*this, n, DIV);
     }
 
-    Number &&Number::operator/(Number &&n) {
+    Number Number::operator/(Number &&n) {
         return performance(*this, n, DIV);
     }
 
@@ -164,11 +171,11 @@ namespace mis {
                 this->data.d = op(data.l, n.asReal());
         else if (n.isNumeric())
             data.d = op(data.d, n.asNumeric());
-        else data.d *= op(data.d, n.asReal());
+        else data.d = op(data.d, n.asReal());
     }
 
-    std::string &&Number::to_string() {
-        return std::move(isNumeric() ? std::to_string(data.l) : std::to_string(data.d));
+    std::string Number::to_string() {
+        return isNumeric() ? std::to_string(data.l) : std::to_string(data.d);
     }
 
     Number &Number::operator=(Number &n) {
@@ -187,14 +194,14 @@ namespace mis {
         return this->isNumeric() ? data.l == i : data.d == i;
     }
 
-    static inline Number &&performance(Number &a, Number &b, auto op) {
+    static inline Number performance(Number &a, Number &b, auto op) {
         if (a.isNumeric())
             if (b.isNumeric())
-                return std::move(Number(op(a.asNumeric(), b.asNumeric())));
-            else return std::move(Number(op(a.asNumeric(), b.asReal())));
+                return Number(op(a.asNumeric(), b.asNumeric()));
+            else return Number(op(a.asNumeric(), b.asReal()));
         else if (b.isNumeric())
-            return std::move(Number(op(a.asReal(), b.asNumeric())));
-        else return std::move(Number(op(a.asReal(), b.asReal())));
+            return Number(op(a.asReal(), b.asNumeric()));
+        else return Number(op(a.asReal(), b.asReal()));
     }
 
     bool Number::operator!=(int i) {

@@ -9,8 +9,8 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include "lang.h"
-#include "Executor.h"
 
 namespace mis {
     class Parser;
@@ -20,22 +20,20 @@ namespace mis {
         /**
          * Set the out stream of the vm.
          * */
-        VirtualMachine &operator()(std::ostream &ostream);
+        VirtualMachine &operator()(std::basic_ostream<char> *ostream);
 
         VirtualMachine &operator<<(std::string &&code);
-
-        /**
-         * stream a line of code to the vm buffer.
-         * */
-//        VirtualMachine &operator<<(const std::string &code);
-
 
         /**
          * End and execute the code in buffer.
          * */
         VirtualMachine &end();
 
-        VirtualMachine& parseAndRun(std::string& s);
+        /**
+         * Parse and run the code.
+         * */
+        VirtualMachine &parseAndRun(std::string &s);
+
         /**
          * Execute the method that return this.
          * */
@@ -44,17 +42,38 @@ namespace mis {
         struct Work;
 
         struct Runtime {
+
+//            template<typename T>
+//            struct Variable {
+//                std::atomic<T> &operator*();
+//
+//                Variable(T value) : value(value) {}
+//
+//            private:
+//                std::atomic<T> value;
+//            };
+
+//            template
+//            class Variable<Number>;
+//
+//            template
+//            class Variable<CharSequence>;
+
             virtual std::ostream *out()=0;
 
             virtual std::vector<Work *>::iterator &getIterator()=0;
 
-            virtual CharSequence *allocate(std::string &s, CharSequence &charSequence)=0;
+            virtual void allocate(std::string &s, CharSequence &charSequence)=0;
 
-            virtual Number *allocate(std::string &s, Number &n)=0;
+            virtual void allocate(std::string &s, Number &n)=0;
 
             virtual Number *getNumber(std::string &s)=0;
 
             virtual CharSequence *getChars(std::string &s)=0;
+
+            virtual void thread(std::function<void(void)>)=0;
+
+            virtual void barrier()=0;
 
             virtual void report(const std::string &errorMessage, bool exit = false)=0;
 
@@ -62,7 +81,9 @@ namespace mis {
         };
 
         struct Work {
-            virtual void performance(Runtime &runtime)=0;
+            using Flow = std::vector<Work *>::iterator &;
+
+            virtual void performance(Runtime &runtime, Flow itr)=0;
         };
 
         /**
@@ -76,18 +97,20 @@ namespace mis {
         virtual void terminate() override;
 
         /**
-         * Create VM from a parser and a Executor.
+         * Create VM from a parser.
          * */
-        VirtualMachine(Parser *parser, Executor *executor);
+        VirtualMachine(Parser *parser);
 
     private:
         Parser *parser;
-        Executor *executor;
+//        Executor *executor;
+        std::basic_ostream<char> *stream;
 
-        std::ostream *stream;
         std::vector<std::string> buff;
         std::string buffer;
     };
+
+
 }
 
 #endif //MACHINEINSTRUCTIONSSIMULATOR_VIRTUALMACHINE_H

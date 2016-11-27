@@ -7,6 +7,7 @@
 
 #include <string>
 #include <functional>
+#include "mis-core/log.h"
 
 namespace mis {
     /**
@@ -17,7 +18,7 @@ namespace mis {
         /**
          * Transfer this instance to string.
          * */
-        virtual std::string &&to_string()=0;
+        virtual std::string to_string()=0;
     };
 
     /**
@@ -53,33 +54,33 @@ namespace mis {
 
         Number(Number &&);
 
-        virtual Number &&operator+(Number &n);
+        virtual Number operator+(Number &n);
 
-        virtual Number &&operator+(Number &&n);
+        virtual Number operator+(Number &&n);
 
         virtual Number &operator+=(Number &n);
 
         virtual Number &operator+=(Number &&n);
 
-        virtual Number &&operator-(Number &n);
+        virtual Number operator-(Number &n);
 
-        virtual Number &&operator-(Number &&n);
+        virtual Number operator-(Number &&n);
 
         virtual Number &operator-=(Number &n);
 
         virtual Number &operator-=(Number &&n);
 
-        virtual Number &&operator*(Number &n);
+        virtual Number operator*(Number &n);
 
-        virtual Number &&operator*(Number &&n);
+        virtual Number operator*(Number &&n);
 
         virtual Number &operator*=(Number &n);
 
         virtual Number &operator*=(Number &&n);
 
-        virtual Number &&operator/(Number &n);
+        virtual Number operator/(Number &n);
 
-        virtual Number &&operator/(Number &&n);
+        virtual Number operator/(Number &&n);
 
         virtual Number &operator/=(Number &n);
 
@@ -117,7 +118,7 @@ namespace mis {
 
         virtual Number &operator=(Number &&n);
 
-        virtual std::string &&to_string() override;
+        virtual std::string to_string() override;
 
     private:
         union { long l; double d; } data;
@@ -132,28 +133,40 @@ namespace mis {
     struct CharSequence : public virtual Base {
         virtual const char *getAsCharArray()=0;
 
+        /**
+         * The length of this sequence.
+         * */
         virtual int length()=0;
 
-        virtual std::string &&to_string() =0;
+        virtual std::string to_string() =0;
     };
 
     class String : public CharSequence {
     private:
         std::string string;
     public:
+        String(std::string &&s);
+
+        String(const std::string &s);
+
         String(const char *s);
 
         String(char *s);
 
         ~String();
 
+        /**
+         * Set char at a certain pos
+         * */
         virtual void setCharAt(int idx, char c);
 
+        /** Get char at cuertain pos
+         * */
         virtual char getCharAt(int idx);
 
         virtual const char *getAsCharArray() override;
 
-        virtual std::string &&to_string() override;
+        virtual std::string to_string() override;
 
         virtual int length() override;
     };
@@ -168,7 +181,7 @@ namespace mis {
 
         virtual const char *getAsCharArray() override;
 
-        virtual std::string &&to_string() override;
+        virtual std::string to_string() override;
 
         virtual int length() override;
     };
@@ -177,11 +190,6 @@ namespace mis {
         virtual void terminate()=0;
 
         virtual bool isTerminated()=0;
-    };
-
-    template<typename T>
-    struct Predicate {
-        virtual bool accept(T v) const =0;
     };
 
     template<typename Base, typename T>

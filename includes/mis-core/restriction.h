@@ -9,10 +9,19 @@
 #include "parser.h"
 
 namespace mis {
+    /**
+     * Shortcut for token type.
+     * */
     using TokenType = Parser::Token::Type;
+    /**
+     * Used for lambda.
+     * */
     using UnitBuilderFunc = std::function<mis::VirtualMachine::Work *(Parser::Context &,
                                                                       std::vector<Parser::Token *> &)>;
 
+    /**
+     * The arguments that have varaint length.
+     * */
     template<typename T>
     class VariantArguments {
     private:
@@ -26,8 +35,14 @@ namespace mis {
 
         T getType() const;
 
+        /**
+         * The maximum numbers of the arguments.
+         * */
         int getMax() const;
 
+        /**
+         * The minimum numbers of the arguments.
+         * */
         int getMin() const;
 
         VariantArguments(T &ref);
@@ -39,10 +54,16 @@ namespace mis {
 //        virtual ~VariantArguments();
     };
 
+    /**
+     * The class indecates several avaiable types.
+     * */
     class RangedType {
     public :
         virtual RangedType &operator||(Parser::Token::Type type);
 
+        /**
+         * If a certain type is legal in this case.
+         * */
         bool contains(const Parser::Token::Type type) const;
 
     private:
@@ -56,7 +77,7 @@ namespace mis {
     class VariantArguments<TokenType>;
 
     /**
-     *
+     * The type matcher used to detect the arg-type of the code.
      */
     class TypeMatcher {
     public:
@@ -82,8 +103,14 @@ namespace mis {
         std::vector<std::function<bool(std::vector<Parser::Token *>::iterator, int, int)>> args;
     };
 
+    /**
+     * Build a new UnitBuilder by constrain an unit builder function
+     * */
     Parser::UnitBuilder *constrain(UnitBuilderFunc &&builder, TypeMatcher &predicate);
 
+    /**
+     * Build a new UnitBuilder by constrain an unit builder function
+     * */
     Parser::UnitBuilder *constrain(UnitBuilderFunc &&builder, TypeMatcher &&predicate);
 }
 

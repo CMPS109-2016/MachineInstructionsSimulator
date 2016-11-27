@@ -3,11 +3,9 @@
 //
 
 #include <iostream>
-#include "mis/restriction.h"
+#include "mis-core/restriction.h"
 
 namespace mis {
-
-
     template<typename T>
     int VariantArguments<T>::getMax() const {
         return max;

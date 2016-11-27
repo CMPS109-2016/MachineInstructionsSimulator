@@ -5,13 +5,12 @@
 #ifndef MACHINEINSTRUCTIONSSIMULATOR_DEFAULT_INSTRUCTIONS_H
 #define MACHINEINSTRUCTIONSSIMULATOR_DEFAULT_INSTRUCTIONS_H
 
-#include "parser.h"
+#include "mis-core/parser.h"
 
 namespace mis {
-
     /**
      * Build the default parser.
      */
-    void registerDefault(Parser::Builder &builder);
+    void register_default(Parser::Builder &builder);
 }
 #endif //MACHINEINSTRUCTIONSSIMULATOR_DEFAULT_INSTRUCTIONS_H

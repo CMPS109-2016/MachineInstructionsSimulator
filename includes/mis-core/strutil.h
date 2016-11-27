@@ -10,6 +10,7 @@
 #include <array>
 
 namespace mis {
+
     /**
      * Spilt the string directy by the char. Stored the data into the vector.
      * */
