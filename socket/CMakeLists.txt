@@ -10,14 +10,8 @@ set(SOURCE_FILES
         include/includes.h
         include/TCPSocket.h
         include/TCPServerSocket.h
-        include/UDPSocket.h
-        include/UDPClientSocket.h
-        include/UDPServerSocket.h
         TCPSocket.cpp
         TCPServerSocket.cpp
-        UDPClientSocket.cpp
-        UDPSocket.cpp
-        UDPServerSocket.cpp
         )
 
 add_executable(socket ${SOURCE_FILES})
