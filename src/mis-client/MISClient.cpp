@@ -16,13 +16,13 @@ void mis::MISClient::queryCompile(const std::string &string, std::ostream *out) 
         std::cout << "Cannot connect to server, query fail." << std::endl;
         return;
     }
-    worker = new Worker(socket, [this](Worker *w) {
+    worker = new Worker(string, out, socket, [this](Worker *w) {
         this->garbage(w);
     });
     mutex.lock();
     workingQueue.push_back(worker);
     mutex.unlock();
-    worker->work(string, out);
+    worker->work();
 }
 
 void mis::MISClient::queryCompile(std::string &&string, std::ostream *out) {
@@ -34,13 +34,13 @@ void mis::MISClient::queryCompile(std::string &&string, std::ostream *out) {
         std::cout << "Cannot connect to server, query fail." << std::endl;
         return;
     }
-    worker = new Worker(socket, [this](Worker *w) {
+    worker = new Worker(string, out, socket, [this](Worker *w) {
         this->garbage(w);
     });
     mutex.lock();
     workingQueue.push_back(worker);
     mutex.unlock();
-    worker->work(string, out);
+    worker->work();
 }
 
 mis::MISClient::MISClient(const std::string &remote) : remoteAddress(remote) {
@@ -67,54 +67,52 @@ mis::MISClient::Worker::~Worker() {
     delete (socket);
 }
 
-mis::MISClient::Worker::Worker(TCPSocket *socket) : socket(socket) {
+
+void mis::MISClient::Worker::work() {
+    std::thread([this]() {
+        char lengthBuffer[4];
+        mis::writeInt(lengthBuffer, (int) this->content.length());
+        int wrote = socket->writeToSocket(lengthBuffer, 4);
+        if (wrote == -1) {
+            this->garbage(this);
+            return;
+        }
+        while (wrote < 4) {
+            socket->writeToSocket(lengthBuffer + wrote, 4 - wrote);
+        }
+
+        const char *content = this->content.c_str();
+        wrote = socket->writeToSocket(content, this->content.size());
+        if (wrote == -1) {
+            this->garbage(this);
+            return;
+        }
+        while (wrote < this->content.size()) {
+            socket->writeToSocket(content + wrote, this->content.size() - wrote);
+        }
+
+        memset(lengthBuffer, 0, 4);
+        int read = socket->readFromSocketWithTimeout(lengthBuffer, 4, 120, 0);
+        if (read != 4) {
+            this->garbage(this);
+            return;
+        }
+        int length = mis::readInt(lengthBuffer);
+        char buffer[length];
+        read = socket->readFromSocketWithTimeout(buffer, length, 120, 0);
+        if (read != 4) {
+            this->garbage(this);
+            return;
+        }
+        std::string result(buffer);
+        *this->stream << result << std::endl;
+        garbage(this);
+    });
 }
 
-void mis::MISClient::Worker::work(const std::string &w, std::ostream *outstream) {
-    std::string work(w);
-    std::function<void()> func(
-            [this, work, outstream]() {
-                char lengthBuffer[4];
-                mis::writeInt(lengthBuffer, (int) work.length());
-                int wrote = socket->writeToSocket(lengthBuffer, 4);
-                if (wrote == -1) {
-                    this->garbage(this);
-                    return;
-                }
-                while (wrote < 4) {
-                    socket->writeToSocket(lengthBuffer + wrote, 4 - wrote);
-                }
-
-                const char *content = work.c_str();
-                wrote = socket->writeToSocket(content, work.size());
-                if (wrote == -1) {
-                    this->garbage(this);
-                    return;
-                }
-                while (wrote < work.size()) {
-                    socket->writeToSocket(content + wrote, work.size() - wrote);
-                }
-
-                memset(lengthBuffer, 0, 4);
-                int read = socket->readFromSocketWithTimeout(lengthBuffer, 4, 120, 0);
-                if (read != 4) {
-                    this->garbage(this);
-                    return;
-                }
-                int length = mis::readInt(lengthBuffer);
-                char buffer[length];
-                read = socket->readFromSocketWithTimeout(buffer, length, 120, 0);
-                if (read != 4) {
-                    this->garbage(this);
-                    return;
-                }
-                std::string result(buffer);
-                *outstream << result << std::endl;
-                garbage(this);
-            });
-    std::thread(func, work, socket, outstream, garbage);
-}
-
-mis::MISClient::Worker::Worker(TCPSocket *socket, const function<void(mis::MISClient::Worker *)> &callback) : socket(
-        socket), garbage(callback) {}
+mis::MISClient::Worker::Worker(const string &content, ostream *stream, TCPSocket *socket,
+                               const function<void(mis::MISClient::Worker *)> &garbage) : content(content),
+                                                                                          stream(stream),
+                                                                                          socket(socket),
+                                                                                          garbage(garbage) {}
 
