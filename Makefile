@@ -4,7 +4,7 @@ CFLAGS = -std=c++14 -g
 
 BIN = bin/
 
-all: $(MAKE) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(SERVER_BIN_OBJ) $(CLIENT_EXE) $(SERVER_EXE)
+all: make $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(SERVER_BIN_OBJ) $(CLIENT_EXE) $(SERVER_EXE)
 
 .PHONY:
 	dump
@@ -14,6 +14,7 @@ all: $(MAKE) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(
 	socket
 	client
 	server
+	exe
 
 ##############CORE##############
 
@@ -106,6 +107,11 @@ $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 
 $(SERVER_EXE): $(SERVER_BIN_OBJ)
 	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) -I $(INC_PATH)
+
+exe: $(SERVER_BIN_OBJ) $(CLIENT_BIN_OBJ)
+	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) -I $(INC_PATH)
+	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_BIN_OBJ) -I $(INC_PATH)
+
 
 dump:
 	@echo $(CORE_BIN_OBJ)
