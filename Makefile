@@ -1,6 +1,6 @@
 CC = g++
 INC_PATH = includes/
-CFLAGS = -std=c++14 -Wfatal-errors -g
+CFLAGS = -std=c++14 -g
 
 BIN = bin/
 
