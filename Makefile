@@ -1,6 +1,5 @@
 CC = g++
 INC_PATH = includes/
-SOCK_INC_PATH = socket/include/
 CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
@@ -12,6 +11,13 @@ BIN = bin/
 	socket
 	client
 	server
+
+all:
+	$(CORE_BIN_OBJ)
+	$(INST_BIN_OBJ)
+	$(SOC_BIN_OBJ)
+	$(CLIENT_BIN_OBJ)
+	$(SERVER_BIN_OBJ)
 
 ##############CORE##############
 
