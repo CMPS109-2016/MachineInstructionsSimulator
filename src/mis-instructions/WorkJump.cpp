@@ -99,7 +99,7 @@ namespace mis {
 
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
             mis::log("performance jumpz");
-            bool isZ = getter.get(runtime, <#initializer#>) == 0;
+            bool isZ = getter.get(runtime, flow) == 0;
             if (nz && !isZ)
                 WorkJump::performance(runtime, flow);
             else if (isZ)
@@ -117,19 +117,19 @@ namespace mis {
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
             switch (T) {
                 case WorkPreJMPCOMP::Type::GT:
-                    if (a.get(runtime, <#initializer#>) > b.get(runtime, <#initializer#>))
+                    if (a.get(runtime, flow) > b.get(runtime, flow))
                         WorkJump::performance(runtime, flow);
                     break;
                 case WorkPreJMPCOMP::Type::LT:
-                    if (a.get(runtime, <#initializer#>) < b.get(runtime, <#initializer#>))
+                    if (a.get(runtime, flow) < b.get(runtime, flow))
                         WorkJump::performance(runtime, flow);
                     break;
                 case WorkPreJMPCOMP::Type::GTE:
-                    if (a.get(runtime, <#initializer#>) >= b.get(runtime, <#initializer#>))
+                    if (a.get(runtime, flow) >= b.get(runtime, flow))
                         WorkJump::performance(runtime, flow);
                     break;
                 case WorkPreJMPCOMP::Type::LTE:
-                    if (a.get(runtime, <#initializer#>) <= b.get(runtime, <#initializer#>))
+                    if (a.get(runtime, flow) <= b.get(runtime, flow))
                         WorkJump::performance(runtime, flow);
                     break;
             }

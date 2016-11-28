@@ -87,9 +87,9 @@ namespace mis {
                 Number &ref = *n;
                 try {
                     for (Getter<Number> &get : src)
-                        ref *= get.get(runtime, <#initializer#>);
+                        ref *= get.get(runtime, flow);
                 } catch (mis_exception e) {
-                    runtime.report(&e, true);
+                    runtime.halt(e.getError(), flow);
                 }
             } else {
                 runtime.halt("Runtime error. No such variable named" + target + ".", flow);

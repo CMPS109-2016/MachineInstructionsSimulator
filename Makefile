@@ -20,15 +20,11 @@ INST_SRC = src/mis-instructions/
 INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
 INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
 
-
-EXEC_PATH = bin/
-EXEC = misvm
-
-
 .PHONY: all core
 
 all:
-	$(CORE_OBJ)
+    core
+
 	@echo $(CORE_SRC)
 	@echo "\n"
 	@echo $(CORE_SRC_NAME)
@@ -48,6 +44,8 @@ core:
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
 	@mv $(CORE_OBJ) $(BIN)
+
+
 #$(EXEC): $(OB J)
 #	@mkdir -p $(OBJ_PATH)
 #	@mkdir -p $(EXEC_PATH)
