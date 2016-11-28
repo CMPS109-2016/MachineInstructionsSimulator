@@ -15,7 +15,7 @@ namespace mis {
 
             mutex.lock();
             for (Getter<std::string> &getter :getters)
-                *runtime.out() << getter.get(runtime);
+                *runtime.out() << getter.get(runtime, <#initializer#>);
             mutex.unlock();
         }
     };

@@ -46,6 +46,10 @@ namespace mis {
         * */
         bool isNumeric();
 
+        /**********************
+         * Common constructors
+         **********************/
+
         Number(long);
 
         Number(double);
@@ -53,6 +57,10 @@ namespace mis {
         Number(Number &);
 
         Number(Number &&);
+
+        /**********************
+         * Common operators
+         **********************/
 
         virtual Number operator+(Number &n);
 
@@ -192,6 +200,9 @@ namespace mis {
         virtual bool isTerminated()=0;
     };
 
+    /**
+     * A short-cut to determine the type.
+     * */
     template<typename Base, typename T>
     inline bool instanceof(T *ptr) {
         return dynamic_cast<Base *>(ptr) != nullptr;

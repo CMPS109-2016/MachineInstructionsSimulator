@@ -13,10 +13,11 @@ namespace mis {
         WorkAssign(std::string to, std::string from) : to(std::move(to)), from(std::move(from)) {}
 
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
-            if (runtime.getNumber(to) != nullptr) {
-
+            T *a = get(to, runtime), *b = get(from, runtime);
+            if (a == nullptr || b == nullptr) {
+                runtime.halt("Runtime error on assign!", flow);
+                return;
             }
-
             *get(to, runtime) = *get(from, runtime);
         }
 
@@ -39,12 +40,8 @@ namespace mis {
         virtual String *get(std::string &name, VirtualMachine::Runtime &runtime) override {
             CharSequence *pt = runtime.getChars(name);
             if (pt == nullptr) return nullptr;
-            if (dynamic_cast<String * > (pt)) {
+            if (dynamic_cast<String *> (pt))
                 return dynamic_cast<String * > (pt);
-            } else {
-                runtime.report("Assign exception", true);
-                return nullptr;
-            }
         }
     };
 
@@ -55,12 +52,8 @@ namespace mis {
         virtual Char *get(std::string &name, VirtualMachine::Runtime &runtime) override {
             CharSequence *pt = runtime.getChars(name);
             if (pt == nullptr) return nullptr;
-            if (dynamic_cast<Char * > (pt)) {
+            if (dynamic_cast<Char *> (pt))
                 return dynamic_cast<Char * > (pt);
-            } else {
-                runtime.report("Assign exception", true);
-                return nullptr;
-            }
         }
     };
 }

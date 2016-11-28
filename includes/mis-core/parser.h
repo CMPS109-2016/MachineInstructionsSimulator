@@ -55,6 +55,7 @@ namespace mis {
         std::vector<Linker> linkers;
 
         VirtualMachine::Work *parseUnit(std::map<std::string, std::string> &context, const std::string &line);
+
     public:
 
         /**
@@ -71,6 +72,7 @@ namespace mis {
 
             /**
             * Register the builder to the parser by instruction string matching.
+             * @return if this registraint successed.
             * */
             bool registerInstructionBuilder(const std::string &instruction, UnitBuilder *builder);
 
@@ -116,10 +118,16 @@ namespace mis {
              * */
             const Data &getData() const;
 
+            /**
+             * translate this token to string.
+             * */
             const std::string &asString() const;
 
             Token(Parser::Token::Type type, const std::string &raw, const Parser::Token::Data &data);
 
+            /**
+             * copy constructor
+             * */
             Token(const Token &tk);
 
             ~Token();

@@ -22,8 +22,7 @@ namespace mis {
                 std::string &name = temp;
                 Number *n = runtime.getNumber(name);
                 if (n == nullptr) {
-                    runtime.report("Not found the var named " + name, true);
-                    return Number(0L);
+                    throw mis_exception("Not found the var named " + name);
                 }
                 return *n;
             });
@@ -52,8 +51,7 @@ namespace mis {
                     std::string temp(tk.asString());
                     Number *n = runtime.getNumber(temp);
                     if (n == nullptr) {
-                        runtime.report("Not found the var named [" + temp + "]", true);
-                        return std::string();
+                        throw mis_exception("Not found the var named [" + temp + "]");
                     }
                     std::string s(n->to_string());
 
@@ -75,8 +73,9 @@ namespace mis {
                     std::string temp(tk.asString());
                     std::string &name = temp;
                     CharSequence *n = runtime.getChars(name);
-                    if (n == nullptr)
-                        runtime.report("Not found the var named " + name, true);
+                    if (n == nullptr) {
+                        throw mis_exception("Not found the var named " + name);
+                    }
                     return n->to_string();
                 });
         }

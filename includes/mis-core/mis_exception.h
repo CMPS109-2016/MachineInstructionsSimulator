@@ -10,11 +10,15 @@
 #include <string>
 
 namespace mis {
+    /**
+     * This class is just a helper class for mis project exception capture/handling.
+     * */
     class mis_exception : public virtual std::exception {
     public:
         mis_exception(const std::string &error);
 
         const std::string &getError() const;
+
     private:
         std::string error;
     };

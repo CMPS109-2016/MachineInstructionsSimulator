@@ -3,6 +3,7 @@ project(MachineInstructionsSimulator)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories(includes)
+include_directories(socket/include)
 add_subdirectory(socket)
 
 set(SOURCE_FILES src/mis-core/main.cpp
@@ -24,7 +25,7 @@ set(SOURCE_FILES src/mis-core/main.cpp
         src/mis-instructions/WorkJump.cpp
         src/mis-instructions/WorkMultiThread.cpp
         src/mis-instructions/WorkOut.cpp
-        src/mis-instructions/instruction_impl.cpp src/mis-core/log.cpp includes/mis-core/log.h)
+        src/mis-instructions/instruction_impl.cpp src/mis-core/log.cpp includes/mis-core/log.h includes/mis-client/MISClient.cpp includes/mis-client/MISClient.h includes/mis-server/MISServer.cpp includes/mis-server/MISServer.h includes/mis-core/bit.h src/mis-core/bit.cpp)
 
 add_executable(MachineInstructionsSimulator ${SOURCE_FILES})
 

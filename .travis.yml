@@ -2,6 +2,8 @@ language: cpp
 os:
 - linux
 compiler: g++
+
 script:
-- cmake ..
-- make
+  - mkdir build
+  - cd build
+  - cmake .. && make
