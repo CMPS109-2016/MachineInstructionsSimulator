@@ -31,6 +31,12 @@ namespace mis {
         std::function<T(VirtualMachine::Runtime &, Parser::Token &tk)> func;
     };
 
+    template
+    class Getter<std::string>;
+
+    template
+    class Getter<Number>;
+
 
     Getter<Number> wrapRef(Parser::Token &token);
 
