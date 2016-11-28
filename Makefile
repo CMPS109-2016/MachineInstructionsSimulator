@@ -4,7 +4,7 @@ CFLAGS = -std=c++14 -g
 
 BIN = bin/
 
-all: $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(SERVER_BIN_OBJ)
+all: $(MAKE) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(SERVER_BIN_OBJ)
 
 .PHONY:
 	dump
@@ -71,6 +71,10 @@ $(SOC_BIN_OBJ): $(SOC_SRC_NAME)
 CLIENT_SRC_NAME = $(wildcard src/mis-client/*.cpp)
 CLIENT_OBJ = $(notdir $(patsubst %.cpp, %.o, $(CLIENT_SRC_NAME)))
 CLIENT_BIN_OBJ = $(addprefix $(BIN), $(CLIENT_OBJ))
+CLIENT_EXE = misclient
+
+$(CLIENT_EXE): $(CLIENT_BIN_OBJ)
+	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_BIN_OBJ) -I $(INC_PATH)
 
 client:
 	@mkdir -p $(BIN)
@@ -82,11 +86,13 @@ $(CLIENT_BIN_OBJ): $(CLIENT_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
 	@mv $(CLIENT_OBJ) $(BIN)
 
+
 ##############SERVER##############
 
 SERVER_SRC_NAME = $(wildcard src/mis-server/*.cpp)
 SERVER_OBJ = $(notdir $(patsubst %.cpp, %.o, $(SERVER_SRC_NAME)))
 SERVER_BIN_OBJ = $(addprefix $(BIN), $(SERVER_OBJ))
+SERVER_EXE = misserver
 
 server:
 	@mkdir -p $(BIN)
@@ -97,6 +103,9 @@ $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 	@mv $(SERVER_OBJ) $(BIN)
+
+$(SERVER_EXE): $(SERVER_BIN_OBJ)
+	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) -I $(INC_PATH)
 
 dump:
 	@echo $(CORE_BIN_OBJ)
