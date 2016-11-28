@@ -47,7 +47,7 @@ SOC_OBJ = $(notdir $(patsubst %.cpp, %.o, $(SOC_SRC_NAME)))
 
 socket: $(SOC_SRC_NAME)
 	@mkdir -p $(BIN)
-    $(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I socket/include/
+	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I socket/include/
     @mv $(SOC_OBJ) $(BIN)
 
 ##############CLIENT##############
