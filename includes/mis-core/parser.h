@@ -36,7 +36,7 @@ namespace mis {
         /**
          * Post worker/handler that is used to implement some advanced feature.(like jump or multi-thread).
          * */
-        using Linker = std::function<void(std::vector<VirtualMachine::Work *> &)>;
+        using Linker = std::function<void(Parser&, std::vector<VirtualMachine::Work *> &)>;
 
         Parser(const std::map<std::string, UnitBuilder *> &map, const std::vector<Filter> &filters,
                const std::vector<Linker> &linkers);
@@ -48,6 +48,8 @@ namespace mis {
          * Parse all the content into works.
          * */
         std::vector<VirtualMachine::Work *> parse(const std::string &lines);
+
+        const std::vector<Linker> &getLinkers() const;
 
     private:
         std::map<std::string, UnitBuilder *> map;

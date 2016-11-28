@@ -76,10 +76,10 @@ namespace mis {
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
             VirtualMachine::Runtime *runtimePt = &runtime;
             runtime.thread([this, runtimePt]() {
-                            for (auto itr = works.begin(); itr != works.end(); itr++) {
-                                (*itr)->performance(*runtimePt, itr);
-                            }
-                        }, flow);
+                for (auto itr = works.begin(); itr != works.end(); itr++) {
+                    (*itr)->performance(*runtimePt, itr);
+                }
+            }, flow);
         }
     };
 
@@ -122,7 +122,7 @@ void mis::regMultiThread(Parser::Builder &builder) {
                 return new WorkBarrier();
             }, TypeMatcher()
     ));
-    builder.registerLinker([](std::vector<VirtualMachine::Work *> &works) {
+    builder.registerLinker([](Parser &parser, std::vector<VirtualMachine::Work *> &works) {
         bool inThread = false;
         std::vector<VirtualMachine::Work *> rebuild;
         std::vector<VirtualMachine::Work *> buffer;
@@ -135,6 +135,10 @@ void mis::regMultiThread(Parser::Builder &builder) {
                 if (!inThread)
                     throw mis_exception("Unpaired thread end!");
                 inThread = false;
+
+                for (const Parser::Linker &linker: parser.getLinkers())
+                    linker(parser, buffer);
+
                 rebuild.push_back(new WorkMultiThread(buffer));
                 buffer.clear();
             } else if (inThread) {
@@ -145,7 +149,8 @@ void mis::regMultiThread(Parser::Builder &builder) {
         }
         works = rebuild;
     });
-    builder.registerLinker([](std::vector<VirtualMachine::Work *> &works) {
+
+    builder.registerLinker([](Parser &parser, std::vector<VirtualMachine::Work *> &works) {
         std::map<std::string, std::shared_ptr<std::mutex>> lockMap;
         for (auto itr = works.begin(); itr != works.end(); itr++) {
             if (instanceof<WorkPreLock, VWork>(*itr)) {
@@ -167,4 +172,7 @@ void mis::regMultiThread(Parser::Builder &builder) {
             }
         }
     });
+
+
+
 }

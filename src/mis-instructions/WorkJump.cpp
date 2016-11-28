@@ -207,7 +207,7 @@ void mis::regJump(Parser::Builder &builder) {
                                                                              wrap(tokens[2]),
                                                                              std::string(tokens[0]->asString()));
                                                }, jumpcpPred));
-    builder.registerLinker([](std::vector<VirtualMachine::Work *> &works) {
+    builder.registerLinker([](Parser &parser, std::vector<VirtualMachine::Work *> &works) {
         std::map<std::string, std::vector<VirtualMachine::Work *>::iterator> labelMap;
         for (auto itr = works.begin(); itr != works.end(); ++itr) {
             WorkPreLabel *label = dynamic_cast<WorkPreLabel *>(*itr);

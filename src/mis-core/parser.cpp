@@ -90,6 +90,10 @@ namespace mis {
     Parser::Parser(const std::map<std::string, Parser::UnitBuilder *> &map, const std::vector<Parser::Filter> &filters,
                    const std::vector<Parser::Linker> &linkers) : map(map), filters(filters), linkers(linkers) {}
 
+    const std::vector<Parser::Linker> &Parser::getLinkers() const {
+        return linkers;
+    }
+
     Parser::Token::Type Parser::Token::getType() const {
         return type;
     }
