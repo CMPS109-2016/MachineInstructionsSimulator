@@ -5,10 +5,9 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
-INST_INCLUDE = include/mis-instructions/
 INST_SRC = src/mis-instructions/
 INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
-INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
+INST_OBJ = $(notdir $(patsubst %.cpp, %.o, $(INST_SRC_NAME)))
 
 .PHONY: all core instructions
 
@@ -18,7 +17,7 @@ all:
 
 CORE_SRC = src/mis-core/
 CORE_SRC_NAME = $(wildcard $(CORE_SRC)*.cpp)
-CORE_OBJ = $(patsubst %.cpp, %.o, $(CORE_SRC_NAME))
+CORE_OBJ = $(notdir $(patsubst %.cpp, %.o, $(CORE_SRC_NAME)))
 
 core:
 	@mkdir -p $(BIN)
