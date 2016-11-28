@@ -71,16 +71,13 @@ mis::MISClient::Worker::Worker(TCPSocket *socket) : socket(socket) {
 }
 
 void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstream) {
-    std::function<void(const std::string, TCPSocket *, std::ostream &,
-                       const function<void(mis::MISClient::Worker *)> &)> func(
-            [this](const std::string &string, TCPSocket *socket, std::ostream &out,
-                   const function<void(mis::MISClient::Worker *)> &callback) {
-
+    std::function<void()> func(
+            [this, work, outstream]() {
                 char lengthBuffer[4];
                 mis::writeInt(lengthBuffer, (int) string.length());
                 int wrote = socket->writeToSocket(lengthBuffer, 4);
                 if (wrote == -1) {
-                    callback(this);
+                    this->garbage(this);
                     return;
                 }
                 while (wrote < 4) {
@@ -90,7 +87,7 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
                 const char *content = string.c_str();
                 wrote = socket->writeToSocket(content, string.size());
                 if (wrote == -1) {
-                    callback(this);
+                    this->garbage(this);
                     return;
                 }
                 while (wrote < string.size()) {
@@ -100,19 +97,19 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
                 memset(lengthBuffer, 0, 4);
                 int read = socket->readFromSocketWithTimeout(lengthBuffer, 4, 120, 0);
                 if (read != 4) {
-                    callback(this);
+                    this->garbage(this);
                     return;
                 }
                 int length = mis::readInt(lengthBuffer);
                 char buffer[length];
                 read = socket->readFromSocketWithTimeout(buffer, length, 120, 0);
                 if (read != 4) {
-                    callback(this);
+                    this->garbage(this);
                     return;
                 }
                 std::string result(buffer);
-                out << result << std::endl;
-                callback(this);
+                outstream << result << std::endl;
+                garbage(this);
             });
     std::thread(func, work, socket, outstream, garbage);
 }
