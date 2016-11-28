@@ -28,10 +28,12 @@ namespace mis {
         std::thread([this]() {
             while (!terminate) {
                 TCPSocket *tcp = socket->getConnection();
+                Record *rec = new Record(tcp->getRemoteAddress(), std::chrono::system_clock::now());
                 Worker *worker = new Worker(tcp, parser, virtualMachine, [this](Worker *w) {
                     this->garbage(w);
-                });
+                }, rec);
                 workingQueue.push_back(worker);
+                history.push_back(rec);
                 worker->start();
             }
             startingLock.unlock();
@@ -96,6 +98,7 @@ namespace mis {
             socket->writeToSocket(lengthBuffer, 4);
             socket->writeToSocket(result.c_str(), result.length());
 
+            this->record->setDuration(std::chrono::system_clock::now());
             callback(this);
         });
     }
@@ -109,6 +112,10 @@ namespace mis {
                               const function<void(MISServer::Worker *)> &callback) : socket(socket), parser(parser),
                                                                                      virtualMachine(virtualMachine),
                                                                                      callback(callback) {}
+
+    MISServer::Worker::Worker(TCPSocket *socket, Parser *parser, VirtualMachine *virtualMachine,
+                              const function<void(MISServer::Worker *)> &callback, MISServer::Record *record) : socket(
+            socket), parser(parser), virtualMachine(virtualMachine), callback(callback), record(record) {}
 
     std::string MISServer::Record::getStartTime() const {
         auto t = std::chrono::system_clock::to_time_t(startTime);
@@ -133,5 +140,11 @@ namespace mis {
 
     std::string MISServer::Record::getDuration() const {
         return std::to_string(duration.count());
+    }
+
+    MISServer::Record::Record(const string &ip, const chrono::time_point &startTime) : ip(ip), startTime(startTime) {}
+
+    void MISServer::Record::setDuration(const chrono::time_point &duration) {
+        this->duration = startTime - duration;
     }
 }

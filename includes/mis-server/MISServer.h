@@ -29,6 +29,23 @@ namespace mis {
         const vector<Record *> &getHistory() const;
 
     private:
+        struct Record {
+            Record(const string &ip, const chrono::time_point &startTime);
+
+            const string &getIp() const;
+
+            std::string getDuration() const;
+
+            std::string getStartTime() const;
+
+            void setDuration(const chrono::time_point &end);
+
+        private:
+            std::string ip;
+            std::chrono::system_clock::time_point startTime;
+            std::chrono::milliseconds duration;
+        };
+
         class Worker {
             TCPSocket *socket;
             Parser *parser;
@@ -38,24 +55,13 @@ namespace mis {
 
         public:
             Worker(TCPSocket *socket, Parser *parser, VirtualMachine *virtualMachine,
-                   const function<void(Worker *)> &callback);
+                   const function<void(Worker *)> &callback, Record *record);
 
             void start();
 
             virtual ~Worker();
         };
 
-        struct Record {
-            std::string ip;
-            std::chrono::system_clock::time_point startTime;
-            std::chrono::milliseconds duration;
-
-            const string &getIp() const;
-
-            std::string getDuration() const;
-
-            std::string getStartTime() const;
-        };
 
         TCPServerSocket *socket;
         std::atomic<bool> terminate;
