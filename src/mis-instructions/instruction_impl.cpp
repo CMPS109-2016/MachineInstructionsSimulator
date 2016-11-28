@@ -5,7 +5,6 @@
 #include "mis-instructions/instructions.h"
 
 namespace mis {
-
     template<typename T>
     T Getter<T>::get(VirtualMachine::Runtime &runtime, std::vector<mis::VirtualMachine::Work *>::iterator &flow) {
         return func(runtime, tk);

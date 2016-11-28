@@ -16,15 +16,22 @@
 
 namespace mis {
     struct MISServer {
+        /**
+         * The common record of a worker.
+         * */
         struct Record {
             Record(const string &ip, const chrono::system_clock::time_point &startTime);
 
+            /**The ip of the work*/
             const string &getIp() const;
 
+            /**The duration of the work.*/
             std::string getDuration() const;
 
+            /**The starting time of the work.*/
             std::string getStartTime() const;
 
+            /**Set the duration from the end time*/
             void setDuration(const chrono::system_clock::time_point &end);
 
         private:
@@ -33,21 +40,36 @@ namespace mis {
             long duration;
         };
 
+        /**
+         * If this server is terminated
+         * */
         bool isTerminated();
 
+        /**
+         * Terminate the server.
+         * */
         void terminated();
 
+        /**
+         * Start the server.
+         * */
         void start();
 
+        /**
+         * @param socket lisnter socket will be used.
+         * @param virtualMachine the virtualmachine handing the execution.
+         * @param parser the parser handling the parsing.
+         * */
         MISServer(TCPServerSocket *socket, VirtualMachine *virtualMachine, Parser *parser);
 
         virtual ~MISServer();
 
+        /**
+         * Get the history list.
+         * */
         const vector<Record *> &getHistory() const;
 
     private:
-
-
         class Worker {
             TCPSocket *socket;
             Parser *parser;
@@ -63,7 +85,6 @@ namespace mis {
 
             virtual ~Worker();
         };
-
 
         TCPServerSocket *socket;
         std::atomic<bool> terminate;

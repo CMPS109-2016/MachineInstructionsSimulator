@@ -2,7 +2,9 @@
 // Created by CIJhn on 11/4/2016.
 //
 
-
+/**
+ * This header file is just for internal usage.
+ * */
 #ifndef MACHINEINSTRUCTIONSSIMULATOR_DEF_INSTRUCT_H
 #define MACHINEINSTRUCTIONSSIMULATOR_DEF_INSTRUCT_H
 

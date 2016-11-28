@@ -194,12 +194,6 @@ namespace mis {
         virtual int length() override;
     };
 
-    struct Terminable {
-        virtual void terminate()=0;
-
-        virtual bool isTerminated()=0;
-    };
-
     /**
      * A short-cut to determine the type.
      * */
@@ -207,12 +201,6 @@ namespace mis {
     inline bool instanceof(T *ptr) {
         return dynamic_cast<Base *>(ptr) != nullptr;
     }
-
-    template<class T>
-    struct typeref {};
-
-    template<class T, T value>
-    struct valueref {};
 }
 
 #endif //MACHINEINSTRUCTIONSSIMULATOR_LANG_H

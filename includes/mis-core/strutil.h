@@ -38,6 +38,9 @@ namespace mis {
     std::vector<std::string> &
     readFileByLines(std::string &&filename, std::vector<std::string> &vector, int bufferSize = 256);
 
+    /**
+     * Read the file to string.
+     * */
     std::string readFileToString(std::string &filename);
 
     std::string readFileToString(std::string &&filename);

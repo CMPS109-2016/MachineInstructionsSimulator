@@ -11,10 +11,27 @@
 
 namespace mis {
     struct MISClient {
+        /**Require to compile a block of code.
+         *
+         * @param string the codes.
+         * @param out the out strema of this compilation.
+         * @param block if this compilation is blocking.
+         * @return flase means this compilation failed.
+         * */
         bool queryCompile(const std::string &string, std::ostream *out, bool block);
 
+        /**Require to compile a block of code.
+         *
+         * @param string the codes.
+         * @param out the out strema of this compilation.
+         * @param block if this compilation is blocking.
+         * @return flase means this compilation failed.
+         * */
         bool queryCompile(std::string &&str, std::ostream *out, bool block);
 
+        /**
+         * @param remote The server ip.
+         * */
         MISClient(const std::string &remote);
 
         virtual ~MISClient();
