@@ -35,6 +35,9 @@ namespace mis {
     class Getter<std::string>;
 
     template
+    class Getter<Char>;
+
+    template
     class Getter<Number>;
 
 
