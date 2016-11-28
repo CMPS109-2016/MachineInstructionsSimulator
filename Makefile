@@ -21,7 +21,7 @@ CORE_SRC_NAME = $(wildcard $(CORE_SRC)*.cpp)
 CORE_OBJ = $(notdir $(patsubst %.cpp, %.o, $(CORE_SRC_NAME)))
 CORE_BIN_OBJ = $(addprefix $(BIN),$(CORE_OBJ))
 
-core:
+$(CORE_BIN_OBJ): $(CORE_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(CORE_SRC_NAME) -I $(INC_PATH)
 	@mv $(CORE_OBJ) $(BIN)
@@ -36,7 +36,7 @@ INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
 INST_OBJ = $(notdir $(patsubst %.cpp, %.o, $(INST_SRC_NAME)))
 INST_BIN_OBJ = $(addprefix $(BIN),$(INST_OBJ))
 
-inst:
+$(INST_BIN_OBJ): $(INST_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
 	@mv $(INST_OBJ) $(BIN)
@@ -55,6 +55,11 @@ socket:
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
 	@mv $(SOC_OBJ) $(BIN)
+
+$(SOC_BIN_OBJ): $(SOC_OBJ)
+	@mkdir -p $(BIN)
+	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
+	@mv $(INST_OBJ) $(BIN)
 
 $(SOC_OBJ): $(SOC_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
@@ -97,9 +102,9 @@ $(SERVER_EXE): $(SERVER_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ)
 
 ##############EXE##############
 
-exe: $(SERVER_OBJ) $(CLIENT_OBJ)
-	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
-	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(SERVER_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
+exe: $(SERVER_BIN_OBJ) $(CLIENT_BIN_OBJ)
+	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
+	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
 
 dump:
 	@echo $(CORE_BIN_OBJ)
@@ -109,4 +114,3 @@ dump:
 	@echo $(SERVER_BIN_OBJ)
 
 all: $(CLIENT_EXE) $(SERVER_EXE)
-	@mv $(CLIENT_EXE) $(SERVER_EXE) $(BIN)
