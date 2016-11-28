@@ -34,7 +34,7 @@ namespace mis {
         ~RuntimeImpl() {
             for (std::pair<std::string, Number *> pair: numberPool)delete (pair.second);
             for (std::pair<std::string, CharSequence *> pair: charsPool)delete (pair.second);
-            for (auto itr:threads) delete (*itr);
+            for (auto itr:threads) delete (itr);
         }
 
         void start() {

@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "mis-core/mis_exception.h"
-#include "mis-core/Parser.h"
+#include "mis-core/parser.h"
 #include "mis-core/strutil.h"
 
 namespace mis {
