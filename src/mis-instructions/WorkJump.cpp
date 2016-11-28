@@ -98,7 +98,7 @@ namespace mis {
                   bool nz) : WorkJump(itr), getter(getter), nz(nz) {}
 
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
-            mis::log("performance jumpz");
+            mis::mislog("performance jumpz");
             bool isZ = getter.get(runtime, flow) == 0;
             if (nz && !isZ)
                 WorkJump::performance(runtime, flow);
@@ -140,7 +140,7 @@ namespace mis {
 }
 
 void mis::regJump(Parser::Builder &builder) {
-    mis::log("register jump");
+    mis::mislog("register jump");
     RangedType numberOrVar = RangedType()
                              || TokenType::NUMERIC || TokenType::REAL
                              || TokenType::VAR_REAL || TokenType::VAR_NUMERIC;

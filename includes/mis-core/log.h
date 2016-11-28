@@ -17,7 +17,7 @@ namespace mis {
     /**
      * log the message with current file/function/line infomation.
      * */
-#  define log(s) _lgcapture(s,__FILE__,__FUNCTION__,__LINE__)
+#  define mislog(s) _lgcapture(s,__FILE__,__FUNCTION__,__LINE__)
 }
 
 #endif //MACHINEINSTRUCTIONSSIMULATOR_LOG_H

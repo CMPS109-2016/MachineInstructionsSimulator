@@ -183,7 +183,7 @@ namespace mis {
     }
 
     void register_default(Parser::Builder &builder) {
-        mis::log("register the builder, v1.0");
+        mis::mislog("register the builder, v1.0");
         regFilter(builder);
         regDeclVar(builder);
         regMath(builder);
