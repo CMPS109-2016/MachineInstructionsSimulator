@@ -27,16 +27,6 @@ namespace mis {
         static MISServer *createDefaultServer();
 
     private:
-        TCPServerSocket *socket;
-        std::atomic<bool> terminate;
-        std::mutex mutex, startingLock;
-        VirtualMachine *virtualMachine;
-        Parser *parser;
-
-        std::vector<Worker *> workingQueue;
-
-        void garbage(Worker *worker);
-
         class Worker {
             TCPSocket *socket;
             Parser *parser;
@@ -51,6 +41,18 @@ namespace mis {
 
             virtual ~Worker();
         };
+
+        TCPServerSocket *socket;
+        std::atomic<bool> terminate;
+        std::mutex mutex, startingLock;
+        VirtualMachine *virtualMachine;
+        Parser *parser;
+
+        std::vector<Worker *> workingQueue;
+
+        void garbage(Worker *worker);
+
+
     };
 }
 

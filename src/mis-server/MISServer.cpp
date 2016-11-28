@@ -46,9 +46,8 @@ namespace mis {
     }
 
     MISServer::~MISServer() {
-        for (Worker *worker:workingQueue) {
+        for (Worker *worker: workingQueue)
             delete (worker);
-        }
     }
 
     MISServer::MISServer(TCPServerSocket *socket, VirtualMachine *virtualMachine, Parser *parser) : socket(socket),
