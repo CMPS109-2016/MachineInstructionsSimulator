@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     std::string ip(argv[1]);
     if (ip == "Localhost" || ip == "localhost")
         ip = "127.0.0.1";
-    std::cout << "Starting MIS client..." << std::endl;
+    std::cout << "Initializing MIS client..." << std::endl;
     mis::MISClient *client = new mis::MISClient(ip);
     std::string filename(argv[2]);
     basic_ostream<char> *stream = &std::cout;
