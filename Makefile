@@ -5,14 +5,9 @@ CFLAGS = -std=c++14 -g
 BIN = bin/
 
 .PHONY:
-	dump
-	all
-	core
-	inst
-	socket
-	client
-	server
 	exe
+	clean
+	all
 
 ##############CORE##############
 
@@ -112,5 +107,8 @@ dump:
 	@echo $(SOC_BIN_OBJ)
 	@echo $(CLIENT_BIN_OBJ)
 	@echo $(SERVER_BIN_OBJ)
+
+clean:
+	@rm $(SERVER_OBJ) $(CLIENT_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ)
 
 all: $(CLIENT_EXE) $(SERVER_EXE)
