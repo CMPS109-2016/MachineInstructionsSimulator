@@ -2,8 +2,8 @@
 // Created by CIJhn on 11/27/2016.
 //
 
-#include <future>
 #include <queue>
+#include <thread>
 #include "mis-core/bit.h"
 #include "mis-client/MISClient.h"
 
@@ -114,7 +114,7 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
                 out << result << std::endl;
                 callback(this);
             });
-    std::async(std::launch::async, func, work, socket, outstream, garbage);
+    std::thread(func, work, socket, outstream, garbage);
 }
 
 mis::MISClient::Worker::Worker(TCPSocket *socket, const function<void(mis::MISClient::Worker *)> &callback) : socket(
