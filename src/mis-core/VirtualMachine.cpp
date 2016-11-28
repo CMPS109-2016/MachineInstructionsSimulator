@@ -48,8 +48,8 @@ namespace mis {
                 }
             }
             catch (mis_exception e) {
-                std::cerr << "Runtime exception:" << std::endl;
-                std::cerr << e.getError() << std::endl;
+                *outstream << "Runtime exception:" << std::endl;
+                *outstream << e.getError() << std::endl;
             }
         }
 

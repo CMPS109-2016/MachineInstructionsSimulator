@@ -10,7 +10,7 @@ inline bool exist(std::string &filename) {
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        std::cout << "usage: mis <ip> [-out=outFileName] <filename>" << std::endl;
+        std::cout << "usage: misclient <ip> [-out=outFileName] <filename>" << std::endl;
         return 0;
     }
 
