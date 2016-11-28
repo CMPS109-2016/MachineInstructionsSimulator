@@ -110,7 +110,7 @@ void mis::MISClient::Worker::work(bool blocked) {
         *this->stream << result << std::endl;
         garbage(this);
     };
-    if (!blocked)std::thread(func);
+    if (!blocked)std::thread thread(func);
     else func();
 }
 

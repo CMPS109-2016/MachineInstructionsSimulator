@@ -25,7 +25,7 @@ namespace mis {
 
     void MISServer::start() {
         startingLock.lock();
-        std::thread([this]() {
+        std::thread thr([this]() {
             while (!terminate) {
                 TCPSocket *tcp = socket->getConnection();
                 Record *rec = new Record(tcp->getRemoteAddress(), std::chrono::system_clock::now());
@@ -72,7 +72,7 @@ namespace mis {
     }
 
     void MISServer::Worker::start() {
-        std::thread([this]() {
+        std::thread thr([this]() {
             char lengthBuffer[4];
             int read = socket->readFromSocketWithTimeout(lengthBuffer, 4, 10, 0);
             if (read != 4) {
@@ -137,7 +137,8 @@ namespace mis {
         return std::to_string(duration);
     }
 
-    MISServer::Record::Record(const string &ip, const chrono::system_clock::time_point &startTime) : ip(ip), startTime(startTime) {}
+    MISServer::Record::Record(const string &ip, const chrono::system_clock::time_point &startTime) : ip(ip), startTime(
+            startTime) {}
 
     void MISServer::Record::setDuration(const chrono::system_clock::time_point &end) {
         auto diff = startTime - end;
