@@ -5,44 +5,36 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
-CORE_INCLUDE = includes/mis-core/
+
+INST_INCLUDE = include/mis-instructions/
+INST_SRC = src/mis-instructions/
+INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
+INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
+
+.PHONY: all core instructions
+
+all:
+	core
+	instructions
+
 CORE_SRC = src/mis-core/
 CORE_SRC_NAME = $(wildcard $(CORE_SRC)*.cpp)
 CORE_OBJ = $(patsubst %.cpp, %.o, $(CORE_SRC_NAME))
 
-INST_INCLUDE = include/mis-instructions/
-INST_SRC = src/mis-instructions/
-INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
-INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
-
-INST_INCLUDE = include/mis-instructions/
-INST_SRC = src/mis-instructions/
-INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
-INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
-
-.PHONY: all core
-
-all:
-    core
-	@echo $(CORE_SRC)
-	@echo "\n"
-	@echo $(CORE_SRC_NAME)
-	@echo "\n"
-	@echo $(CORE_OBJ)
-	@echo "\n"
-	@echo $(CORE_INCLUDE)
-#	${MAKE} $(EXEC) || ${MAKE} wipe
-
-
-$(CORE_OBJ): $(INST_SRC_NAME)
-	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
-	@mv $(CORE_OBJ) $(BIN)
-	
 core:
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
+	$(CC) $(CFLAGS) -c $(CORE_SRC_NAME) -I $(INC_PATH)
 	@mv $(CORE_OBJ) $(BIN)
+
+
+INST_SRC = src/mis-instructions/
+INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
+INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
+
+instructions:
+	@mkdir -p $(BIN)
+	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
+	@mv $(INST_OBJ) $(BIN)
 
 
 #$(EXEC): $(OB J)
