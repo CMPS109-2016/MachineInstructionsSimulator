@@ -15,6 +15,8 @@
 namespace mis {
     class VirtualMachine {
     public:
+        class Work;
+
         struct Runtime {
             virtual std::ostream *out()=0;
 
