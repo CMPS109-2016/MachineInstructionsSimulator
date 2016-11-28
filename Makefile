@@ -52,7 +52,7 @@ CLIENT_BIN_OBJ = $(addprefix $(BIN), $(CLIENT_OBJ))
 
 $(CLIENT_BIN_OBJ): $(CLIENT_SRC_NAME)
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) $(SOC_INCLUDE)
+	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
 	@mv $(CLIENT_OBJ) $(BIN)
 
 ##############SERVER##############
@@ -63,7 +63,7 @@ SERVER_BIN_OBJ = $(addprefix $(BIN), $(SERVER_OBJ))
 
 $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) $(SOC_INCLUDE)
+	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 	@mv $(SERVER_OBJ) $(BIN)
 
 dump:
