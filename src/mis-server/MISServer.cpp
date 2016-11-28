@@ -25,7 +25,9 @@ namespace mis {
         std::thread([]() {
             while (!terminate) {
                 TCPSocket *tcp = socket->getConnection();
-                Worker *worker = new Worker(tcp, parser, virtualMachine, garbage);
+                Worker *worker = new Worker(tcp, parser, virtualMachine, [this](Worker *w) {
+                    this->garbage(w);
+                });
                 worker->start();
             }
         });

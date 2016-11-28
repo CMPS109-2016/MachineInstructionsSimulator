@@ -16,7 +16,9 @@ void mis::MISClient::queryCompile(const std::string &string, std::ostream &out) 
         std::cout << "Cannot connect to server, query fail." << std::endl;
         return;
     }
-    worker = new Worker(socket, garbage);
+    worker = new Worker(socket, [this](Worker *w) {
+        this->garbage(w);
+    });
     mutex.lock();
     workingQueue.push_back(worker);
     mutex.unlock();
@@ -32,7 +34,9 @@ void mis::MISClient::queryCompile(std::string &&string, std::ostream &out) {
         std::cout << "Cannot connect to server, query fail." << std::endl;
         return;
     }
-    worker = new Worker(socket, garbage);
+    worker = new Worker(socket, [this](Worker *w) {
+        this->garbage(w);
+    });
     mutex.lock();
     workingQueue.push_back(worker);
     mutex.unlock();

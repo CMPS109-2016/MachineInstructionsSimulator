@@ -4,12 +4,7 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
-all:
-	$(CORE_BIN_OBJ)
-	$(INST_BIN_OBJ)
-	$(SOC_BIN_OBJ)
-	$(CLIENT_BIN_OBJ)
-	$(SERVER_BIN_OBJ)
+all: $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(SERVER_BIN_OBJ)
 
 .PHONY:
 	dump
