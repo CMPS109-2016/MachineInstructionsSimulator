@@ -21,9 +21,6 @@ $(CORE_BIN_OBJ): $(CORE_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(CORE_SRC_NAME) -I $(INC_PATH)
 	@mv $(CORE_OBJ) $(BIN)
 
-$(CORE_OBJ): $(CORE_SRC_NAME)
-	$(CC) $(CFLAGS) -c $(CORE_SRC_NAME) -I $(INC_PATH)
-
 ##############INSTRUCTIONS##############
 
 INST_SRC = src/mis-instructions/
@@ -35,9 +32,6 @@ $(INST_BIN_OBJ): $(INST_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
 	@mv $(INST_OBJ) $(BIN)
-
-$(INST_OBJ): $(INST_SRC_NAME) $(CORE_SRC_NAME)
-	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
 
 ##############SOCKET##############
 
@@ -56,9 +50,6 @@ $(SOC_BIN_OBJ): $(SOC_OBJ)
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
 	@mv $(INST_OBJ) $(BIN)
 
-$(SOC_OBJ): $(SOC_SRC_NAME)
-	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
-
 ##############CLIENT##############
 
 CLIENT_SRC_NAME = $(wildcard src/mis-client/*.cpp)
@@ -74,9 +65,6 @@ $(CLIENT_BIN_OBJ): $(CLIENT_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
 	@mv $(CLIENT_OBJ) $(BIN)
 
-$(CLIENT_OBJ): $(CLIENT_SRC_NAME)
-	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
-
 ##############SERVER##############
 
 SERVER_SRC_NAME = $(wildcard src/mis-server/*.cpp)
@@ -88,9 +76,6 @@ $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 	@mv $(SERVER_OBJ) $(BIN)
-
-$(SERVER_OBJ): $(SERVER_SRC_NAME)
-	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 
 $(SERVER_EXE): $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
 	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
