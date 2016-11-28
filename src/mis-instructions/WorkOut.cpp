@@ -2,7 +2,6 @@
 // Created by CIJhn on 11/21/2016.
 //
 #include "mis-instructions/instructions.h"
-#include "mis-core/log.h"
 namespace mis {
     class WorkOut : public VWork {
         std::vector<Getter<std::string>> getters;

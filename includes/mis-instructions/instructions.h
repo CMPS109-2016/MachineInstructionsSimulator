@@ -8,8 +8,8 @@
 
 #include <iostream>
 #include <algorithm>
-#include <mis-core/mis_exception.h>
 
+#include "mis-core/mis_exception.h"
 #include "mis-core/restriction.h"
 #include "mis-instructions/default_instructions.h"
 #include "mis-core/strutil.h"

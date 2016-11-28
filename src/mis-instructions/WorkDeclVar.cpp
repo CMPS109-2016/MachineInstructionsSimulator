@@ -2,7 +2,6 @@
 // Created by CIJhn on 11/21/2016.
 //
 
-#include "mis-core/restriction.h"
 #include "mis-instructions/instructions.h"
 
 namespace mis {
