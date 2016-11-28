@@ -66,7 +66,7 @@ $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) $(SOC_INCLUDE)
 	@mv $(SERVER_OBJ) $(BIN)
 
-dump
+dump:
 	@echo $(CORE_BIN_OBJ)
 	@echo $(INST_BIN_OBJ)
 	@echo $(SOC_BIN_OBJ)
