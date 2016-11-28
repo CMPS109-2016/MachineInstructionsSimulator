@@ -5,6 +5,8 @@
 #ifndef MACHINEINSTRUCTIONSSIMULATOR_MISCLIENT_H
 #define MACHINEINSTRUCTIONSSIMULATOR_MISCLIENT_H
 
+#include <functional>
+#include <mutex>
 #include "TCPSocket.h"
 
 namespace mis {
@@ -27,7 +29,6 @@ namespace mis {
 
             virtual ~Worker();
 
-            std::future future;
             TCPSocket *socket;//prepare to reused
             std::function<void(Worker *)> garbage;
         };

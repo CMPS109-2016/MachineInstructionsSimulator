@@ -67,7 +67,6 @@ mis::MISClient::Worker::Worker(TCPSocket *socket) : socket(socket) {
 }
 
 void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstream) {
-    this->future.get();
     std::function<void()> func([](const std::string &string, TCPSocket *socket, std::ostream &out,
                                   const function<void(mis::MISClient::Worker *)> &callback) {
 
@@ -109,7 +108,7 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
         out << result << std::endl;
         callback(this);
     });
-    this->future = std::async(std::launch::async, func, work, socket, outstream, garbage);
+    std::async(std::launch::async, func, work, socket, outstream, garbage);
 }
 
 mis::MISClient::Worker::Worker(TCPSocket *socket, const function<void(mis::MISClient::Worker *)> &callback) : socket(
