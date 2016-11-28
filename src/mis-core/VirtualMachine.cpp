@@ -16,11 +16,11 @@ namespace mis {
 
     class RuntimeImpl : virtual public VirtualMachine::Runtime {
     private:
-        std::vector<VirtualMachine::Work *>::iterator itr, end;
+        std::vector<mis::VirtualMachine::Work *>::iterator itr, end;
         std::basic_ostream<char> *outstream;
         std::map<std::string, CharSequence *> charsPool;
         std::map<std::string, Number *> numberPool;
-        std::vector<VirtualMachine::Work *> &works;
+        std::vector<mis::VirtualMachine::Work *> &works;
 
         std::mutex mutex;
         std::map<std::thread *, VirtualMachine::Work::Flow> threadsMap;
@@ -114,7 +114,7 @@ namespace mis {
     };
 
 
-    void VirtualMachine::run(std::vector<VirtualMachine::Work *> &works, std::basic_ostream<char> *ostream) {
+    void VirtualMachine::run(std::vector<mis::VirtualMachine::Work *> &works, std::basic_ostream<char> *ostream) {
         RuntimeImpl runtime(works, ostream);
         runtime.start();
     }

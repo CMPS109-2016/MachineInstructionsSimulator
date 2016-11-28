@@ -18,7 +18,7 @@ namespace mis {
         /**
          * Run the Works
          * */
-        void run(std::vector<VirtualMachine::Work *> &works, std::basic_ostream<char> *ostream);
+        void run(std::vector<mis::VirtualMachine::Work *> &works, std::basic_ostream<char> *ostream);
 
         struct Runtime {
             virtual std::ostream *out()=0;

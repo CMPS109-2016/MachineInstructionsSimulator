@@ -28,7 +28,7 @@ namespace mis {
             if (n != nullptr) {
                 Number &ref = *n;
                 for (Getter<Number> &get : src)
-                    ref += get.get(runtime, <#initializer#>);
+                    ref += get.get(runtime, flow);
             } else {
                 runtime.halt("Runtime error. No such variable named" + target + ".", flow);
             }
@@ -49,7 +49,7 @@ namespace mis {
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
             Number *np = runtime.getNumber(target);
             if (np != nullptr)
-                (*np) = a.get(runtime, <#initializer#>) - b.get(runtime, <#initializer#>);
+                (*np) = a.get(runtime, flow) - b.get(runtime, flow);
         }
     };
 
@@ -67,8 +67,8 @@ namespace mis {
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
             Number *np = runtime.getNumber(target);
             if (np != nullptr) {
-                Number &&an = b.get(runtime, <#initializer#>);
-                Number &&bn = a.get(runtime, <#initializer#>);
+                Number &&an = b.get(runtime, flow);
+                Number &&bn = a.get(runtime, flow);
                 if (bn == 0) {
                 } else
                     (*np) = an / bn;
