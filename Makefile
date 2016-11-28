@@ -4,7 +4,7 @@ CFLAGS = -std=c++14 -g
 
 BIN = bin/
 
-all: make $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) $(CLIENT_BIN_OBJ) $(SERVER_BIN_OBJ) $(CLIENT_EXE) $(SERVER_EXE)
+all: $(CLIENT_EXE) $(SERVER_EXE)
 
 .PHONY:
 	dump
