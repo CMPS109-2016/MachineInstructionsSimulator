@@ -42,7 +42,7 @@ namespace mis {
 
         private:
             std::string ip;
-            std::chrono::system_clock::time_point startTime;
+            std::chrono::time_point startTime;
             long duration;
         };
 
