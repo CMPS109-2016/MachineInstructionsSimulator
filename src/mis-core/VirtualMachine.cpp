@@ -2,14 +2,14 @@
 // Created by CIJhn on 10/23/2016.
 //
 
-#include "mis-core/VirtualMachine.h"
 #include <iostream>
 #include <map>
 #include <atomic>
 #include <set>
+
+#include "mis-core/VirtualMachine.h"
 #include "mis-core/strutil.h"
 #include "mis-core/mis_exception.h"
-
 #include "mis-core/parser.h"
 
 namespace mis {
@@ -23,8 +23,7 @@ namespace mis {
         std::vector<mis::VirtualMachine::Work *> &works;
 
         std::mutex mutex;
-        std::map<std::thread *, VirtualMachine::Work::Flow> threadsMap;
-        std::map<std::thread::id, VirtualMachine::Work::Flow> threadFlowMap;
+        std::vector<std::thread *> threads;
 
     public:
         RuntimeImpl(std::vector<VirtualMachine::Work *> &units,
@@ -35,7 +34,7 @@ namespace mis {
         ~RuntimeImpl() {
             for (std::pair<std::string, Number *> pair: numberPool)delete (pair.second);
             for (std::pair<std::string, CharSequence *> pair: charsPool)delete (pair.second);
-            for (std::pair<std::thread *, VirtualMachine::Work::Flow> pair:threadsMap) delete (pair.first);
+            for (auto itr:threads) delete (*itr);
         }
 
         void start() {
@@ -56,16 +55,6 @@ namespace mis {
 
 
         virtual std::ostream *out() { return outstream; };
-
-        virtual void halt(const std::string &errorMessage, VirtualMachine::Work::Flow flow) override {
-            mutex.lock();
-            auto id = std::this_thread::get_id();
-            *outstream << errorMessage << std::endl;
-            if (exit) {
-                itr = end;
-            }
-            mutex.unlock();
-        }
 
         virtual void allocate(std::string &s, CharSequence &charSequence) {
             mis::CharSequence *p = nullptr;
@@ -104,12 +93,12 @@ namespace mis {
 //            if (mainThreadID == std::this_thread::get_id())
 //          can only called from main thread. therefore this is thread-safe
             std::thread *th = new std::thread(function);
-            threadsMap[th] = flow;
+            threads.push_back(th);
         }
 
         void barrier() override {
-            for (std::pair<std::thread *, VirtualMachine::Work::Flow> pair:threadsMap)
-                pair.first->join();
+            for (auto thread:threads)
+                thread->join();
         }
     };
 

@@ -15,8 +15,7 @@ namespace mis {
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
             T *a = get(to, runtime), *b = get(from, runtime);
             if (a == nullptr || b == nullptr) {
-                runtime.halt("Runtime error on assign!", flow);
-                return;
+                throw mis_exception("Runtime error on assign!");
             }
             *get(to, runtime) = *get(from, runtime);
         }

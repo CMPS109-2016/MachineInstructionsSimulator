@@ -31,8 +31,6 @@ namespace mis {
             virtual void thread(std::function<void()>, std::vector<Work *>::iterator &flow)=0;
 
             virtual void barrier()=0;
-
-            virtual void halt(const std::string &errorMessage, std::vector<Work *>::iterator &flow)=0;
         };
 
         struct Work {

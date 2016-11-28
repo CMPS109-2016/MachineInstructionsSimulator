@@ -30,7 +30,7 @@ namespace mis {
                 for (Getter<Number> &get : src)
                     ref += get.get(runtime, flow);
             } else {
-                runtime.halt("Runtime error. No such variable named" + target + ".", flow);
+                throw mis_exception("Runtime error. No such variable named" + target + ".");
             }
         }
     };
@@ -85,14 +85,10 @@ namespace mis {
             Number *n = runtime.getNumber(target);
             if (n != nullptr) {
                 Number &ref = *n;
-                try {
-                    for (Getter<Number> &get : src)
-                        ref *= get.get(runtime, flow);
-                } catch (mis_exception e) {
-                    runtime.halt(e.getError(), flow);
-                }
+                for (Getter<Number> &get : src)
+                    ref *= get.get(runtime, flow);
             } else {
-                runtime.halt("Runtime error. No such variable named" + target + ".", flow);
+                throw mis_exception("Runtime error. No such variable named" + target + ".");
             }
         }
     };
