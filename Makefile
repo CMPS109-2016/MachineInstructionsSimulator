@@ -56,8 +56,8 @@ SOC_BIN_OBJ = $(addprefix $(BIN), $(SOC_OBJ))
 
 socket:
 	@mkdir -p $(BIN)
-    $(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
-    @mv $(SOC_OBJ) $(BIN)
+	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
+	@mv $(SOC_OBJ) $(BIN)
 
 $(SOC_BIN_OBJ): $(SOC_SRC_NAME)
 	@mkdir -p $(BIN)
