@@ -9,7 +9,7 @@
 #include <mutex>
 #include "TCPServerSocket.h"
 #include "mis-core/VirtualMachine.h"
-#include "mis-core/Parser.h";
+#include "mis-core/parser.h";
 
 namespace mis {
     struct MISServer {

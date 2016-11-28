@@ -6,7 +6,7 @@ include_directories(includes)
 include_directories(socket/include)
 add_subdirectory(socket)
 
-set(SOURCE_FILES includes/mis-client/main.cpp
+set(SOURCE_FILES src/mis-client/main.cpp
         includes/mis-core/restriction.h src/mis-core/restriction.cpp
         src/mis-core/VirtualMachine.cpp includes/mis-core/VirtualMachine.h
         includes/mis-core/strutil.h src/mis-core/strutil.cpp
