@@ -35,11 +35,6 @@ SOC_OBJ = $(notdir $(patsubst %.cpp, %.o, $(SOC_SRC_NAME)))
 SOC_INCLUDE = socket/include/
 SOC_BIN_OBJ = $(addprefix $(BIN), $(SOC_OBJ))
 
-socket:
-	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
-	@mv $(SOC_OBJ) $(BIN)
-
 $(SOC_BIN_OBJ): $(SOC_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
@@ -57,7 +52,7 @@ $(CLIENT_EXE): $(CLIENT_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
 
 $(CLIENT_BIN_OBJ): $(CLIENT_SRC_NAME)
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
+	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 	@mv $(CLIENT_OBJ) $(BIN)
 
 ##############SERVER##############
