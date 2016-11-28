@@ -4,11 +4,6 @@ CFLAGS = -std=c++14 -g
 BUILD = build/
 BIN = bin/
 
-.PHONY:
-	exe
-	clean
-	all
-
 ##############CORE##############
 
 CORE_SRC = src/mis-core/
@@ -45,7 +40,7 @@ socket:
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
 	@mv $(SOC_OBJ) $(BIN)
 
-$(SOC_BIN_OBJ): $(SOC_OBJ)
+$(SOC_BIN_OBJ): $(SOC_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
 	@mv $(INST_OBJ) $(BIN)
@@ -93,7 +88,13 @@ dump:
 	@echo $(CLIENT_BIN_OBJ)
 	@echo $(SERVER_BIN_OBJ)
 
+
 clean:
 	@rm $(SERVER_BIN_OBJ) $(CLIENT_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
 
 all: $(CLIENT_EXE) $(SERVER_EXE)
+
+.PHONY:
+	exe
+	clean
+	all
