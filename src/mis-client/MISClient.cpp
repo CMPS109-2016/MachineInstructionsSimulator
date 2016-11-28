@@ -74,7 +74,7 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
     std::function<void()> func(
             [this, work, outstream]() {
                 char lengthBuffer[4];
-                mis::writeInt(lengthBuffer, (int) string.length());
+                mis::writeInt(lengthBuffer, (int) work.length());
                 int wrote = socket->writeToSocket(lengthBuffer, 4);
                 if (wrote == -1) {
                     this->garbage(this);
@@ -84,14 +84,14 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
                     socket->writeToSocket(lengthBuffer + wrote, 4 - wrote);
                 }
 
-                const char *content = string.c_str();
-                wrote = socket->writeToSocket(content, string.size());
+                const char *content = work.c_str();
+                wrote = socket->writeToSocket(content, work.size());
                 if (wrote == -1) {
                     this->garbage(this);
                     return;
                 }
-                while (wrote < string.size()) {
-                    socket->writeToSocket(content + wrote, string.size() - wrote);
+                while (wrote < work.size()) {
+                    socket->writeToSocket(content + wrote, work.size() - wrote);
                 }
 
                 memset(lengthBuffer, 0, 4);
