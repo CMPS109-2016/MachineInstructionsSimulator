@@ -74,7 +74,7 @@ client:
 	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
 	@mv $(CLIENT_OBJ) $(BIN)
 
-$(SOC_OBJ): $(CLIENT_SRC_NAME)
+$(CLIENT_OBJ): $(CLIENT_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
 
 ##############SERVER##############
