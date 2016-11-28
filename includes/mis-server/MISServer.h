@@ -16,19 +16,6 @@
 
 namespace mis {
     struct MISServer {
-        bool isTerminated();
-
-        void terminated();
-
-        void start();
-
-        MISServer(TCPServerSocket *socket, VirtualMachine *virtualMachine, Parser *parser);
-
-        virtual ~MISServer();
-
-        const vector<Record *> &getHistory() const;
-
-    private:
         struct Record {
             Record(const string &ip, const chrono::system_clock::time_point &startTime);
 
@@ -45,6 +32,21 @@ namespace mis {
             std::chrono::system_clock::time_point startTime;
             long duration;
         };
+
+        bool isTerminated();
+
+        void terminated();
+
+        void start();
+
+        MISServer(TCPServerSocket *socket, VirtualMachine *virtualMachine, Parser *parser);
+
+        virtual ~MISServer();
+
+        const vector<Record *> &getHistory() const;
+
+    private:
+
 
         class Worker {
             TCPSocket *socket;
