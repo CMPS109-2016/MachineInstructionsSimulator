@@ -7,7 +7,7 @@
 #include "mis-core/bit.h"
 #include "mis-client/MISClient.h"
 
-void mis::MISClient::queryCompile(const std::string &string, std::ostream &out) {
+void mis::MISClient::queryCompile(const std::string &string, std::ostream *out) {
     Worker *worker = nullptr;
     char add[string.size()];
     memcpy(add, string.c_str(), string.size());
@@ -25,7 +25,7 @@ void mis::MISClient::queryCompile(const std::string &string, std::ostream &out) 
     worker->work(string, out);
 }
 
-void mis::MISClient::queryCompile(std::string &&string, std::ostream &out) {
+void mis::MISClient::queryCompile(std::string &&string, std::ostream *out) {
     Worker *worker = nullptr;
     char add[string.size()];
     memcpy(add, string.c_str(), string.size());
@@ -70,7 +70,7 @@ mis::MISClient::Worker::~Worker() {
 mis::MISClient::Worker::Worker(TCPSocket *socket) : socket(socket) {
 }
 
-void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstream) {
+void mis::MISClient::Worker::work(const std::string &work, std::ostream *outstream) {
     std::function<void()> func(
             [this, work, outstream]() {
                 char lengthBuffer[4];
@@ -108,7 +108,7 @@ void mis::MISClient::Worker::work(const std::string &work, std::ostream &outstre
                     return;
                 }
                 std::string result(buffer);
-                outstream << result << std::endl;
+                *outstream << result << std::endl;
                 garbage(this);
             });
     std::thread(func, work, socket, outstream, garbage);
