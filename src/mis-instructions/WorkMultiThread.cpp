@@ -11,10 +11,10 @@ namespace mis {
         WorkSleep(Getter<mis::Number> time) : time(std::move(time)) {}
 
         virtual void performance(VirtualMachine::Runtime &runtime, Flow flow) override {
-            Number &&tm = time.get(runtime, <#initializer#>);
+            Number &&tm = time.get(runtime, flow);
             if (tm.isNumeric())
-                std::this_thread::sleep_for(std::chrono::duration<long>(time.get(runtime, <#initializer#>).asNumeric()));
-            else std::this_thread::sleep_for(std::chrono::duration<double>(time.get(runtime, <#initializer#>).asReal()));
+                std::this_thread::sleep_for(std::chrono::duration<long>(time.get(runtime, flow).asNumeric()));
+            else std::this_thread::sleep_for(std::chrono::duration<double>(time.get(runtime, flow).asReal()));
         }
     };
 
@@ -79,7 +79,7 @@ namespace mis {
                             for (auto itr = works.begin(); itr != works.end(); itr++) {
                                 (*itr)->performance(*runtimePt, itr);
                             }
-                        }, <#initializer#>);
+                        }, flow);
         }
     };
 
