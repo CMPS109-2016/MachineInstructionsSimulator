@@ -5,7 +5,7 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
-.PHONY
+.PHONY:
 	core
 	instructions
 	socket
