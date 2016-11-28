@@ -4,20 +4,21 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
-.PHONY:
-	dump
-	core
-	inst
-	socket
-	client
-	server
-
 all:
 	$(CORE_BIN_OBJ)
 	$(INST_BIN_OBJ)
 	$(SOC_BIN_OBJ)
 	$(CLIENT_BIN_OBJ)
 	$(SERVER_BIN_OBJ)
+
+.PHONY:
+	dump
+	all
+	core
+	inst
+	socket
+	client
+	server
 
 ##############CORE##############
 
