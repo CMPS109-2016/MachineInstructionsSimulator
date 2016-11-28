@@ -4,7 +4,6 @@ CFLAGS = -std=c++14 -g
 
 BIN = bin/
 
-all: $(CLIENT_EXE) $(SERVER_EXE)
 
 .PHONY:
 	dump
@@ -109,3 +108,5 @@ dump:
 	@echo $(SOC_BIN_OBJ)
 	@echo $(CLIENT_BIN_OBJ)
 	@echo $(SERVER_BIN_OBJ)
+
+all: $(CLIENT_EXE) $(SERVER_EXE)
