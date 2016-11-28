@@ -7,14 +7,16 @@
 namespace mis {
 
     template<typename T>
-    T Getter::get(VirtualMachine::Runtime &runtime, std::vector<mis::VirtualMachine::Work *>::iterator &flow) {
+    T Getter<T>::get(VirtualMachine::Runtime &runtime, std::vector<mis::VirtualMachine::Work *>::iterator &flow) {
         return func(runtime, tk);
     }
 
-    Getter::Getter(const Parser::Token &tk, const std::function<T(VirtualMachine::Runtime &, Parser::Token &)> &func) :
+    template<typename T>
+    Getter<T>::Getter(const Parser::Token &tk, const std::function<T(VirtualMachine::Runtime &, Parser::Token &)> &func) :
             tk(tk), func(func) {}
 
-    Getter::Getter(const Getter &o) : tk(o.tk), func(o.func) {}
+    template<typename T>
+    Getter<T>::Getter(const Getter &o) : tk(o.tk), func(o.func) {}
 
 
     Getter<mis::Number> wrapRef(mis::Parser::Token
