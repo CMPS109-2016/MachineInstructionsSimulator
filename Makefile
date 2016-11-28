@@ -1,7 +1,7 @@
 CC = g++
 INC_PATH = includes/
 CFLAGS = -std=c++14 -g
-
+BUILD = build/
 BIN = bin/
 
 .PHONY:
@@ -66,10 +66,10 @@ CLIENT_OBJ = $(notdir $(patsubst %.cpp, %.o, $(CLIENT_SRC_NAME)))
 CLIENT_BIN_OBJ = $(addprefix $(BIN), $(CLIENT_OBJ))
 CLIENT_EXE = misclient
 
-$(CLIENT_EXE): $(CLIENT_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ)
-	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
+$(CLIENT_EXE): $(CLIENT_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
+	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
 
-client:
+$(CLIENT_BIN_OBJ): $(CLIENT_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
 	@mv $(CLIENT_OBJ) $(BIN)
@@ -84,7 +84,7 @@ SERVER_OBJ = $(notdir $(patsubst %.cpp, %.o, $(SERVER_SRC_NAME)))
 SERVER_BIN_OBJ = $(addprefix $(BIN), $(SERVER_OBJ))
 SERVER_EXE = misserver
 
-server:
+$(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 	@mv $(SERVER_OBJ) $(BIN)
@@ -92,12 +92,12 @@ server:
 $(SERVER_OBJ): $(SERVER_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 
-$(SERVER_EXE): $(SERVER_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ)
-	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
+$(SERVER_EXE): $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
+	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
 
 ##############EXE##############
 
-exe: $(SERVER_BIN_OBJ) $(CLIENT_BIN_OBJ)
+exe:
 	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
 	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE) -lpthread
 
@@ -111,6 +111,5 @@ dump:
 clean:
 	@rm $(SERVER_OBJ) $(CLIENT_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ)
 
-all: $(CLIENT_EXE) $(SERVER_EXE)
-	mv $(SERVER_OBJ) $(CLIENT_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ) $(BIN)
-	mv $(CLIENT_EXE) $(SERVER_EXE)
+all: $(SERVER_EXE) $(SERVER_EXE)
+#@mv $(SERVER_OBJ) $(CLIENT_OBJ) $(CORE_OBJ) $(INST_OBJ) $(SOC_OBJ) $(BIN)
