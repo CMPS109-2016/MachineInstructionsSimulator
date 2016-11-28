@@ -82,7 +82,7 @@ namespace mis {
             }
         }
         for (Linker link: linkers)
-            link(works);
+            link(*this, works);
         delete (context);
         return works;
     }
