@@ -24,7 +24,6 @@ INST_OBJ = $(patsubst %.cpp, %.o, $(INST_SRC_NAME))
 
 all:
     core
-
 	@echo $(CORE_SRC)
 	@echo "\n"
 	@echo $(CORE_SRC_NAME)
