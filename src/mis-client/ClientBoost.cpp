@@ -24,16 +24,11 @@ int main(int argc, char *argv[]) {
     auto pos = filename.find("-out=");
     if (pos != filename.npos) {
         filename = filename.substr(pos);
-        if (exist(filename)) {
-            stream = new std::ofstream(filename);
-            if (argc == 3)
-                filename = argv[3];
-            else {
-                std::cout << "Require third argument as the file containing the code!" << std::endl;
-                return 0;
-            }
-        } else {
-            std::cout << "Cannot find file [" + filename + "]!" << std::endl;
+        stream = new std::ofstream(filename);
+        if (argc == 3)
+            filename = argv[3];
+        else {
+            std::cout << "Require third argument as the file containing the code!" << std::endl;
             return 0;
         }
     }
