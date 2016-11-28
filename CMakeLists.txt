@@ -6,7 +6,7 @@ include_directories(includes)
 include_directories(socket/include)
 add_subdirectory(socket)
 
-set(SOURCE_FILES src/mis-client/main.cpp
+set(SOURCE_FILES src/mis-client/ClientBoost.cpp
         includes/mis-core/restriction.h src/mis-core/restriction.cpp
         src/mis-core/VirtualMachine.cpp includes/mis-core/VirtualMachine.h
         includes/mis-core/strutil.h src/mis-core/strutil.cpp
@@ -30,7 +30,7 @@ set(SOURCE_FILES src/mis-client/main.cpp
 
         src/mis-client/MISClient.cpp includes/mis-client/MISClient.h
         src/mis-server/MISServer.cpp includes/mis-server/MISServer.h
-        )
+        src/mis-server/ServerBoost.cpp)
 
 add_executable(MachineInstructionsSimulator ${SOURCE_FILES})
 

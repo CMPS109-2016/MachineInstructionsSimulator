@@ -7,14 +7,14 @@
 #include "mis-core/bit.h"
 #include "mis-client/MISClient.h"
 
-void mis::MISClient::queryCompile(const std::string &string, std::ostream *out) {
+bool mis::MISClient::queryCompile(const std::string &string, std::ostream *out, bool block) {
     Worker *worker = nullptr;
     char add[string.size()];
     memcpy(add, string.c_str(), string.size());
     TCPSocket *socket = new TCPSocket(add, 450, 65536, 65536);
     if (socket->isPeerDisconnected()) {
         std::cout << "Cannot connect to server, query fail." << std::endl;
-        return;
+        return false;
     }
     worker = new Worker(string, out, socket, [this](Worker *w) {
         this->garbage(w);
@@ -22,17 +22,18 @@ void mis::MISClient::queryCompile(const std::string &string, std::ostream *out) 
     mutex.lock();
     workingQueue.push_back(worker);
     mutex.unlock();
-    worker->work();
+    worker->work(block);
+    return true;
 }
 
-void mis::MISClient::queryCompile(std::string &&string, std::ostream *out) {
+bool mis::MISClient::queryCompile(std::string &&string, std::ostream *out, bool block) {
     Worker *worker = nullptr;
     char add[string.size()];
     memcpy(add, string.c_str(), string.size());
     TCPSocket *socket = new TCPSocket(add, 450, 65536, 65536);
     if (socket->isPeerDisconnected()) {
         std::cout << "Cannot connect to server, query fail." << std::endl;
-        return;
+        return false;
     }
     worker = new Worker(string, out, socket, [this](Worker *w) {
         this->garbage(w);
@@ -40,7 +41,8 @@ void mis::MISClient::queryCompile(std::string &&string, std::ostream *out) {
     mutex.lock();
     workingQueue.push_back(worker);
     mutex.unlock();
-    worker->work();
+    worker->work(block);
+    return true;
 }
 
 mis::MISClient::MISClient(const std::string &remote) : remoteAddress(remote) {
@@ -68,8 +70,8 @@ mis::MISClient::Worker::~Worker() {
 }
 
 
-void mis::MISClient::Worker::work() {
-    std::thread([this]() {
+void mis::MISClient::Worker::work(bool blocked) {
+    auto func = [this]() {
         char lengthBuffer[4];
         mis::writeInt(lengthBuffer, (int) this->content.length());
         int wrote = socket->writeToSocket(lengthBuffer, 4);
@@ -107,7 +109,9 @@ void mis::MISClient::Worker::work() {
         std::string result(buffer);
         *this->stream << result << std::endl;
         garbage(this);
-    });
+    };
+    if (!blocked)std::thread thread(func);
+    else func();
 }
 
 mis::MISClient::Worker::Worker(const string &content, ostream *stream, TCPSocket *socket,

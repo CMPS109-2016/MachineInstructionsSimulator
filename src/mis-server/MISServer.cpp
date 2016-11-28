@@ -14,9 +14,13 @@ namespace mis {
 
     void MISServer::terminated() {
         terminate = true;
+        mutex.lock();
         delete (socket);
         delete (virtualMachine);
         delete (parser);
+        for (auto work:workingQueue)
+            delete (work);
+        mutex.unlock();
     }
 
     void MISServer::start() {
@@ -27,6 +31,7 @@ namespace mis {
                 Worker *worker = new Worker(tcp, parser, virtualMachine, [this](Worker *w) {
                     this->garbage(w);
                 });
+                workingQueue.push_back(worker);
                 worker->start();
             }
             startingLock.unlock();
@@ -34,13 +39,16 @@ namespace mis {
     }
 
     void MISServer::garbage(MISServer::Worker *worker) {
+        if (worker == nullptr)
+            return;
         mutex.lock();
         auto itr = workingQueue.begin();
         for (; itr != workingQueue.end(); itr++) {
             if ((*itr) == worker)
                 break;
         }
-        workingQueue.erase(itr);
+        if (itr != workingQueue.end())
+            workingQueue.erase(itr);
         delete (worker);
         mutex.unlock();
     }
@@ -48,6 +56,8 @@ namespace mis {
     MISServer::~MISServer() {
         for (Worker *worker: workingQueue)
             delete (worker);
+        for (Record *his:history)
+            delete (his);
     }
 
     MISServer::MISServer(TCPServerSocket *socket, VirtualMachine *virtualMachine, Parser *parser) : socket(socket),
@@ -55,13 +65,9 @@ namespace mis {
                                                                                                             virtualMachine),
                                                                                                     parser(parser) {}
 
-    MISServer *MISServer::createDefaultServer() {
-        TCPServerSocket *socket = new TCPServerSocket("127.0.0.1", 450, 16);
-        Parser::Builder builder;
-        register_default(builder);
-        return new MISServer(socket, new VirtualMachine(), builder.build());
+    const vector<MISServer::Record *> &MISServer::getHistory() const {
+        return history;
     }
-
 
     void MISServer::Worker::start() {
         std::thread([this]() {
@@ -104,4 +110,28 @@ namespace mis {
                                                                                      virtualMachine(virtualMachine),
                                                                                      callback(callback) {}
 
+    std::string MISServer::Record::getStartTime() const {
+        auto t = std::chrono::system_clock::to_time_t(startTime);
+        tm *local = localtime(&t);
+        return std::string(std::to_string(local->tm_year) +
+                           "-" +
+                           std::to_string(local->tm_mon) +
+                           "-" +
+                           std::to_string(local->tm_mday) +
+                           " " +
+                           std::to_string(local->tm_hour) +
+                           ":" +
+                           std::to_string(local->tm_min) +
+                           ":" +
+                           std::to_string(local->tm_sec)
+        );
+    }
+
+    const string &MISServer::Record::getIp() const {
+        return ip;
+    }
+
+    std::string MISServer::Record::getDuration() const {
+        return std::to_string(duration.count());
+    }
 }

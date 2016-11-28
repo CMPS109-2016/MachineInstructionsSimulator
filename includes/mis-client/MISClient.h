@@ -11,9 +11,9 @@
 
 namespace mis {
     struct MISClient {
-        void queryCompile(const std::string &string, std::ostream *out = &std::cout);
+        bool queryCompile(const std::string &string, std::ostream *out, bool block);
 
-        void queryCompile(std::string &&str, std::ostream *out = &std::cout);
+        bool queryCompile(std::string &&str, std::ostream *out, bool block);
 
         MISClient(const std::string &remote);
 
@@ -21,7 +21,7 @@ namespace mis {
 
     private:
         struct Worker {
-            void work();
+            void work(bool blocked);
 
             Worker(const string &content, ostream *stream, TCPSocket *socket, const function<void(Worker *)> &garbage);
 
