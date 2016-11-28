@@ -70,7 +70,8 @@ mis::MISClient::Worker::~Worker() {
 mis::MISClient::Worker::Worker(TCPSocket *socket) : socket(socket) {
 }
 
-void mis::MISClient::Worker::work(const std::string &work, std::ostream *outstream) {
+void mis::MISClient::Worker::work(const std::string &w, std::ostream *outstream) {
+    std::string work(w);
     std::function<void()> func(
             [this, work, outstream]() {
                 char lengthBuffer[4];

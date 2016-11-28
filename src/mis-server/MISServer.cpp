@@ -21,7 +21,7 @@ namespace mis {
 
     void MISServer::start() {
         startingLock.lock();
-        std::thread([]() {
+        std::thread([this]() {
             while (!terminate) {
                 TCPSocket *tcp = socket->getConnection();
                 Worker *worker = new Worker(tcp, parser, virtualMachine, [this](Worker *w) {
@@ -65,7 +65,7 @@ namespace mis {
 
 
     void MISServer::Worker::start() {
-        std::thread([socket, callback, virtualMachine, parser]() {
+        std::thread([this]() {
             char lengthBuffer[4];
             int read = socket->readFromSocketWithTimeout(lengthBuffer, 4, 10, 0);
             if (read != 4) {
