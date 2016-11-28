@@ -46,9 +46,7 @@ inst:
 	@mv $(INST_OBJ) $(BIN)
 
 $(INST_BIN_OBJ): $(INST_SRC_NAME) $(CORE_SRC_NAME)
-	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(INST_SRC_NAME) -I $(INC_PATH)
-	@mv $(INST_OBJ) $(BIN)
 
 ##############SOCKET##############
 
@@ -63,9 +61,7 @@ socket:
 	@mv $(SOC_OBJ) $(BIN)
 
 $(SOC_BIN_OBJ): $(SOC_SRC_NAME)
-	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SOC_SRC_NAME) -I $(SOC_INCLUDE)
-	@mv $(SOC_OBJ) $(BIN)
 
 ##############CLIENT##############
 
@@ -83,10 +79,7 @@ client:
 	@mv $(CLIENT_OBJ) $(BIN)
 
 $(CLIENT_BIN_OBJ): $(CLIENT_SRC_NAME)
-	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(CLIENT_SRC_NAME) -I $(INC_PATH) -I  $(SOC_INCLUDE)
-	@mv $(CLIENT_OBJ) $(BIN)
-
 
 ##############SERVER##############
 
@@ -101,9 +94,7 @@ server:
 	@mv $(SERVER_OBJ) $(BIN)
 
 $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
-	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
-	@mv $(SERVER_OBJ) $(BIN)
 
 $(SERVER_EXE): $(SERVER_BIN_OBJ)
 	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_BIN_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE)
