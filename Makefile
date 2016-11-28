@@ -4,7 +4,6 @@ CFLAGS = -std=c++14 -g
 
 BIN = bin/
 
-
 .PHONY:
 	dump
 	all
@@ -67,7 +66,7 @@ CLIENT_OBJ = $(notdir $(patsubst %.cpp, %.o, $(CLIENT_SRC_NAME)))
 CLIENT_BIN_OBJ = $(addprefix $(BIN), $(CLIENT_OBJ))
 CLIENT_EXE = misclient
 
-$(CLIENT_EXE): $(CLIENT_OBJ)
+$(CLIENT_EXE): $(CLIENT_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
 	$(CC) $(CFLAGS) -o $(CLIENT_EXE) $(CLIENT_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE)
 
 client:
@@ -93,7 +92,7 @@ server:
 $(SERVER_OBJ): $(SERVER_SRC_NAME)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) -I $(SOC_INCLUDE)
 
-$(SERVER_EXE): $(SERVER_OBJ)
+$(SERVER_EXE): $(SERVER_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ)
 	$(CC) $(CFLAGS) -o $(SERVER_EXE) $(SERVER_OBJ) $(CORE_BIN_OBJ) $(INST_BIN_OBJ) $(SOC_BIN_OBJ) -I $(INC_PATH) -I $(SOC_INCLUDE)
 
 ##############EXE##############
