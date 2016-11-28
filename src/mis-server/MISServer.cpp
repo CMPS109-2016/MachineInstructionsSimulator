@@ -30,8 +30,8 @@ namespace mis {
                 });
                 worker->start();
             }
+            startingLock.unlock();
         });
-        startingLock.unlock();
     }
 
     void MISServer::garbage(MISServer::Worker *worker) {
