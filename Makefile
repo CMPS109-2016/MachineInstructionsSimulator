@@ -109,3 +109,4 @@ dump:
 	@echo $(SERVER_BIN_OBJ)
 
 all: $(CLIENT_EXE) $(SERVER_EXE)
+	@mv $(CLIENT_EXE) $(SERVER_EXE) $(BIN)
