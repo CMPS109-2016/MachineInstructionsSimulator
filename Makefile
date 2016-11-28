@@ -5,7 +5,6 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
-
 INST_INCLUDE = include/mis-instructions/
 INST_SRC = src/mis-instructions/
 INST_SRC_NAME = $(wildcard $(INST_SRC)*.cpp)
@@ -37,7 +36,7 @@ instructions:
 	@mv $(INST_OBJ) $(BIN)
 
 
-#$(EXEC): $(OB J)
+# $(EXEC): $(OB J)
 #	@mkdir -p $(OBJ_PATH)
 #	@mkdir -p $(EXEC_PATH)
 #	$(CC) $(CFLAGS) -o $@ $(CORE_OBJ) -I $(INC_PATH)
