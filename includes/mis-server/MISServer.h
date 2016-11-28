@@ -30,7 +30,7 @@ namespace mis {
 
     private:
         struct Record {
-            Record(const string &ip, const chrono::time_point &startTime);
+            Record(const string &ip, const chrono::system_clock::time_point &startTime);
 
             const string &getIp() const;
 
@@ -38,11 +38,11 @@ namespace mis {
 
             std::string getStartTime() const;
 
-            void setDuration(const chrono::time_point &end);
+            void setDuration(const chrono::system_clock::time_point &end);
 
         private:
             std::string ip;
-            std::chrono::time_point startTime;
+            std::chrono::system_clock::time_point startTime;
             long duration;
         };
 

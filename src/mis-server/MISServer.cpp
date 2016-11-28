@@ -137,9 +137,9 @@ namespace mis {
         return std::to_string(duration);
     }
 
-    MISServer::Record::Record(const string &ip, const chrono::time_point &startTime) : ip(ip), startTime(startTime) {}
+    MISServer::Record::Record(const string &ip, const chrono::system_clock::time_point &startTime) : ip(ip), startTime(startTime) {}
 
-    void MISServer::Record::setDuration(const chrono::time_point &end) {
+    void MISServer::Record::setDuration(const chrono::system_clock::time_point &end) {
         auto diff = startTime - end;
         duration = diff.count();
     }
