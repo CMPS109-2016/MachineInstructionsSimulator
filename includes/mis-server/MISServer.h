@@ -43,7 +43,7 @@ namespace mis {
         private:
             std::string ip;
             std::chrono::system_clock::time_point startTime;
-            std::chrono::milliseconds duration;
+            long duration;
         };
 
         class Worker {
@@ -73,8 +73,6 @@ namespace mis {
         std::vector<Record *> history;
 
         void garbage(Worker *worker);
-
-
     };
 }
 

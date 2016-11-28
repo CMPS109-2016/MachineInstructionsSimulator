@@ -109,11 +109,6 @@ namespace mis {
 
 
     MISServer::Worker::Worker(TCPSocket *socket, Parser *parser, VirtualMachine *virtualMachine,
-                              const function<void(MISServer::Worker *)> &callback) : socket(socket), parser(parser),
-                                                                                     virtualMachine(virtualMachine),
-                                                                                     callback(callback) {}
-
-    MISServer::Worker::Worker(TCPSocket *socket, Parser *parser, VirtualMachine *virtualMachine,
                               const function<void(MISServer::Worker *)> &callback, MISServer::Record *record) : socket(
             socket), parser(parser), virtualMachine(virtualMachine), callback(callback), record(record) {}
 
@@ -139,12 +134,13 @@ namespace mis {
     }
 
     std::string MISServer::Record::getDuration() const {
-        return std::to_string(duration.count());
+        return std::to_string(duration);
     }
 
     MISServer::Record::Record(const string &ip, const chrono::time_point &startTime) : ip(ip), startTime(startTime) {}
 
-    void MISServer::Record::setDuration(const chrono::time_point &duration) {
-        this->duration = startTime - duration;
+    void MISServer::Record::setDuration(const chrono::time_point &end) {
+        auto diff = startTime - end;
+        duration = diff.count();
     }
 }
