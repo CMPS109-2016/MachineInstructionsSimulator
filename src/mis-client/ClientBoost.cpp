@@ -14,10 +14,10 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    std::string ip(argv[0]);
+    std::string ip(argv[1]);
     std::cout << "Starting MIS client..." << std::endl;
     mis::MISClient *client = new mis::MISClient(ip);
-    std::string filename(argv[1]);
+    std::string filename(argv[2]);
     basic_ostream<char> *stream = &std::cout;
     auto pos = filename.find("-out=");
     if (pos != filename.npos) {
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         if (exist(filename)) {
             stream = new std::ofstream(filename);
             if (argc == 3)
-                filename = argv[2];
+                filename = argv[3];
             else {
                 std::cout << "Require third argument as the file containing the code!" << std::endl;
                 return 0;
