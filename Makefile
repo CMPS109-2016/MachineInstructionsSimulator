@@ -5,6 +5,9 @@ CFLAGS = -std=c++14 -Wfatal-errors -g
 
 BIN = bin/
 
+.PHONY
+	dump
+
 ##############CORE##############
 
 CORE_SRC = src/mis-core/
@@ -62,3 +65,10 @@ $(SERVER_BIN_OBJ): $(SERVER_SRC_NAME)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) -c $(SERVER_SRC_NAME) -I $(INC_PATH) $(SOC_INCLUDE)
 	@mv $(SERVER_OBJ) $(BIN)
+
+dump
+	@echo $(CORE_BIN_OBJ)
+	@echo $(INST_BIN_OBJ)
+	@echo $(SOC_BIN_OBJ)
+	@echo $(CLIENT_BIN_OBJ)
+	@echo $(SERVER_BIN_OBJ)
