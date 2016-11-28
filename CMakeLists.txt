@@ -28,8 +28,8 @@ set(SOURCE_FILES includes/mis-client/main.cpp
         src/mis-instructions/WorkOut.cpp
         src/mis-instructions/instruction_impl.cpp
 
-        includes/mis-client/MISClient.cpp includes/mis-client/MISClient.h
-        includes/mis-server/MISServer.cpp includes/mis-server/MISServer.h
+        src/mis-client/MISClient.cpp includes/mis-client/MISClient.h
+        src/mis-server/MISServer.cpp includes/mis-server/MISServer.h
         )
 
 add_executable(MachineInstructionsSimulator ${SOURCE_FILES})

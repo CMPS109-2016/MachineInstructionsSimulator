@@ -6,7 +6,7 @@
 #include <future>
 #include "mis-instructions/default_instructions.h"
 #include "mis-core/bit.h"
-#include "MISServer.h"
+#include "mis-server/MISServer.h"
 
 namespace mis {
     bool MISServer::isTerminated() {

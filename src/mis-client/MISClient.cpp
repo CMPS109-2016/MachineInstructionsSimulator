@@ -5,7 +5,7 @@
 #include <future>
 #include <queue>
 #include "mis-core/bit.h"
-#include "MISClient.h"
+#include "mis-client/MISClient.h"
 
 void mis::MISClient::queryCompile(const std::string &string, std::ostream &out) {
     Worker *worker = nullptr;
