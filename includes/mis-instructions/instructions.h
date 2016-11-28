@@ -20,19 +20,11 @@ namespace mis {
 
     template<typename T>
     struct Getter {
-        T get(VirtualMachine::Runtime &runtime, VirtualMachine::Work::Flow flow) {
-            try {
-                return func(runtime, tk);
-            } catch (mis_exception e) {
-                runtime.halt(e.getError(), flow);
-                return 0;
-            }
-        }
+        T get(VirtualMachine::Runtime &runtime, VirtualMachine::Work::Flow flow);
 
-        Getter(const Parser::Token &tk, const std::function<T(VirtualMachine::Runtime &, Parser::Token &)> &func) :
-                tk(tk), func(func) {}
+        Getter(const Parser::Token &tk, const std::function<T(VirtualMachine::Runtime &, Parser::Token &)> &func);
 
-        Getter(const Getter &o) : tk(o.tk), func(o.func) {}
+        Getter(const Getter &o);
 
     private:
         Parser::Token tk;
