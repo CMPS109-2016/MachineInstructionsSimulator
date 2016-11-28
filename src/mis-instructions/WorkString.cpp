@@ -17,12 +17,12 @@ namespace mis {
             CharSequence *p = runtime.getChars(varName);
             if (dynamic_cast<String *>(p)) {
                 String *s = dynamic_cast<String *>(p);
-                Number n = idx.get(runtime, <#initializer#>);
+                Number n = idx.get(runtime, flow);
                 if (n.isReal())
                     throw mis_exception("SET_STR_CHAR require the index being a Numeric.");
                 if (n.asNumeric() > s->length())
                     throw mis_exception("SET_STR_CHAR the index should not greater than the length of the string.");
-                s->setCharAt((int) n.asNumeric(), cha.get(runtime, <#initializer#>).getChar());
+                s->setCharAt((int) n.asNumeric(), cha.get(runtime, flow).getChar());
             }
         }
     };
@@ -41,7 +41,7 @@ namespace mis {
             if (dynamic_cast<String *>(p) && dynamic_cast<Char *>(charP)) {
                 String *s = dynamic_cast<String *>(p);
                 Char *c = dynamic_cast<Char *>(charP);
-                Number n = idx.get(runtime, <#initializer#>);
+                Number n = idx.get(runtime, flow);
                 if (n.isReal())
                     throw mis_exception("GET_STR_CHAR require the index being a Numeric.");
                 if (n.asNumeric() > s->length())

@@ -15,6 +15,12 @@
 namespace mis {
     class VirtualMachine {
     public:
+        struct Work {
+            using Flow = std::vector<Work *>::iterator &;
+
+            virtual void performance(Runtime &runtime, Flow itr)=0;
+        };
+
         /**
          * Run the Works
          * */
@@ -38,11 +44,7 @@ namespace mis {
             virtual void halt(const std::string &errorMessage, std::vector<Work *>::iterator &flow)=0;
         };
 
-        struct Work {
-            using Flow = std::vector<Work *>::iterator &;
 
-            virtual void performance(Runtime &runtime, Flow itr)=0;
-        };
     };
 
 
